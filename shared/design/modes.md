@@ -28,10 +28,13 @@ one without reading. The win is speed, legibility, and the absence of surprise.
 Landing pages, product pages, pricing, launch pages, campaign sites. A person arrives, is
 persuaded or not, and leaves. Expression pays.
 
-- Do: a hero that is a thesis, strong type, orchestrated page-load, scroll reveals,
-  atmosphere, one signature moment.
-- Do not: bury the action, sacrifice LCP for a decorative hero, animate above-the-fold
-  content into existence so slowly the message arrives late.
+The page is an argument, not a stack of sections, and it is the one surface whose success
+someone else measures. Write the argument, pick the hero from what the subject is, and hold
+the tightest performance budget in the plugin: **`landing.md`**, read at step 1 alongside
+this file whenever MODE resolves to `marketing`.
+
+The two failures worth naming here: burying the action, and a hero that is beautiful and
+answers none of what / for me / next.
 
 ### `editorial`
 Docs, blogs, long-form, changelogs, case studies, reports. Reading is the job.

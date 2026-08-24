@@ -17,7 +17,9 @@ Read only the reference the decision needs. All paths under `${CLAUDE_PLUGIN_ROO
 | File | Read when |
 | --- | --- |
 | `design/modes.md` | Always, at step 1 — routing and expression budget |
+| `design/landing.md` | MODE is `marketing` — the page's argument, hero, proof, pricing, conversion |
 | `design/originality.md` | ORIGINALITY is `signature` or `benchmark` |
+| `design/devices.md` | With `design/originality.md`, at layout and composition time — what to move *to* once a default is rejected |
 | `design/craft.md` | Any visual decision: type, color, space, motion, layout |
 | `design/spectacle.md` | Any 3D, shader, particle, ambient-motion or scroll-choreography idea — and always before spending a `loud` budget |
 | `design/copy.md` | Any user-visible words get written |
@@ -84,10 +86,18 @@ Watch CSS specificity collisions — a type selector (`.section`) and an element
 For a surface with real capabilities behind it, `build-surface` carries the implementation
 loop; this skill owns the contract and the visual craft.
 
-## Step 4 — Verify, then subtract
+## Step 4 — Render, score, then subtract
 
-Run the checklist in `quality/floor.md`. Then Chanel's rule: remove one accessory and name
-what was removed.
+**Look at it before judging it.** Serve the surface, screenshot 390 / 768 / 1440, and score
+the five-axis rubric in `quality/floor.md` against the images. Fix the lowest axis, re-render,
+re-score. Two passes maximum. No browser tool in the environment → report `not rendered` and
+`not scored` as findings; never score from source and never call the design verified.
+
+This is the step that separates this skill from a prompt. Everything above it is a plan; a
+plan judged only as text converges on the defaults `design/originality.md` bans.
+
+Then run the rest of the checklist in `quality/floor.md`, and Chanel's rule: remove one
+accessory and name what was removed.
 
 ## Step 5 — Record
 

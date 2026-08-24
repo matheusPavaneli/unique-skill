@@ -16,7 +16,9 @@ misses these numbers is not production-grade, whatever it looks like in a screen
 | Hero image | ≤ 150 KB | > 300 KB |
 | Main-thread long tasks on load | 0 over 200 ms | any over 300 ms |
 
-Announce the budget in the plan; report actuals at verification.
+Announce the budget in the plan; report actuals at verification. The command that produces
+each of these numbers — and what to report when the tool is not installed — is in
+`measure.md`.
 
 ## Fonts — where distinctive type usually goes wrong
 

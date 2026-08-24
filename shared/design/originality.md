@@ -30,6 +30,13 @@ with icons → alternating image/text → testimonial → pricing table → dark
 footer. That order is fine when the content demands it; it is a template when the content
 was fitted to it.
 
+**A blacklist alone lowers the floor without raising the ceiling.** A rejected default
+leaves a gap, and the gap gets filled by the next-nearest default. `devices.md` is the
+positive repertoire — named composition, type, color and detail devices with the condition
+each one needs — to derive the replacement from instead. Read it at layout time, after the
+provenance lines below exist, never before: a device chosen from a list is a default with a
+longer name.
+
 ## Gate 1 — The swap test
 
 Take the token set and the layout concept. Ask: would this work unchanged for a different

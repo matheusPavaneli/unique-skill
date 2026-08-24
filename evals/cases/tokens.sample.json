@@ -1,0 +1,10 @@
+[
+  { "name": "body text on ground",        "fg": "#1a1a1a",             "bg": "#fdfcfa", "size": "body" },
+  { "name": "muted text on ground",       "fg": "#595959",             "bg": "#ffffff", "size": "body" },
+  { "name": "accent text on ground",      "fg": "oklch(45% 0.11 250)", "bg": "#ffffff", "size": "body" },
+  { "name": "ground text on accent",      "fg": "#ffffff",             "bg": "oklch(45% 0.11 250)", "size": "body" },
+  { "name": "display heading on ground",  "fg": "#8c8c8c",             "bg": "#ffffff", "size": "large" },
+  { "name": "border on ground",           "fg": "#8c8c8c",             "bg": "#ffffff", "size": "ui" },
+  { "name": "focus ring on ground",       "fg": "oklch(55% 0.13 250)", "bg": "#ffffff", "size": "ui" },
+  { "name": "body text on dark ground",   "fg": "#f2f0ec",             "bg": "#14161a", "size": "body" }
+]

@@ -70,8 +70,8 @@ one.
 ## Verification checklist — run before saying done
 
 1. **Build clean.** Compiles, no type errors, no console errors or React key warnings.
-2. **Three widths.** 390 / 768 / 1440. Screenshot if the environment allows — a picture is
-   worth a thousand tokens. Check 320 px and 200 % zoom.
+2. **Render and look.** Required, not optional — see *The render pass* below. Serve the
+   surface, screenshot 390 / 768 / 1440, and read the images. Check 320 px and 200 % zoom.
 3. **Keyboard only.** Tab through the whole surface. Every control reachable, focus always
    visible, order matches the visual order, overlays trap and restore, `Escape` works.
 4. **Contrast.** Body text, muted text, placeholder, disabled text, text over images and
@@ -89,3 +89,51 @@ one.
 
 Report honestly. A failed check named is worth more than a checklist claimed. If a step
 could not run in this environment, say which and why.
+
+## The render pass
+
+Design is not verifiable from source. A surface read as code is judged against what the
+reader expects code to produce, which is the same distribution the banned defaults in
+`../design/originality.md` came from. The only way out is to look at the pixels.
+
+**The loop, run before the subtract-one rule:**
+
+1. **Serve it.** The real dev server or a static build. Not a fragment in isolation.
+2. **Screenshot 390 / 768 / 1440.** Full page, not the viewport crop.
+3. **Score the rubric below against the images**, not against the code. Write the five
+   numbers down; an unwritten score is a vibe.
+4. **Fix the lowest axis only.** One axis per pass. Fixing three at once makes it
+   impossible to tell which change helped.
+5. **Re-render and re-score.** Two passes maximum, then stop and report the remaining
+   score. A third pass is thrash, not craft.
+
+**Tools, in order of preference:** the project's own Playwright or Puppeteer if it has one ·
+a browser MCP server · `npx playwright screenshot` · a headless Chrome invocation.
+
+**When there is no browser available at all:** report `not rendered — no browser tool in
+this environment` as a finding, alongside the rubric line `not scored`. Never skip it
+silently, never score the rubric from source, and never describe the design as verified.
+The surface is delivered as unverified, and the report says so in those words.
+
+## The rubric
+
+Five axes, 1–5, scored against the screenshot.
+
+| Axis | 1 | 5 |
+| --- | --- | --- |
+| **Composition** | Stacked full-width bands, everything centred, one rhythm from top to bottom | A structure with a reason — an asymmetry, an anchor, a deliberate break — and the eye lands where the job of the screen is |
+| **Type** | One size for headings, one for body, default tracking, ragged measure | A scale that is visible as a scale; display set with optical care; measure held; the face carries the subject |
+| **Color** | Grey on white with an accent applied to everything actionable and decorative alike | A dominant ground, one accent that means "act", supports that stay support; contrast is structural, not incidental |
+| **Density and rhythm** | Uniform padding everywhere; nothing groups; the page is a list | Space groups related things and separates unrelated ones; the section rhythm comes from the type scale |
+| **Signature** | Nothing here would be missed if it were another company's page | One element a person could describe from memory, and it traces to a provenance fact |
+
+Read the axis descriptions as the failure and the target, not as a grading curve. Scoring a
+3 across the board is the template result — it is the most common outcome and it is a fail,
+not a pass.
+
+**MODE changes what a good score means, and never lowers the floor.** On `product-surface`
+and `native`, Signature scoring high is a *defect* — record it as such rather than
+congratulating it, and read the axis as "one element of the small stuff done unusually well"
+instead. On `quiet` budget, expect 2 on Signature and demand 4+ on Density and rhythm.
+
+Report the five numbers in the response. Three numbers and an adjective is not a score.
