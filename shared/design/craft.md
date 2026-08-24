@@ -47,6 +47,27 @@ Test every ramp against `forced-colors: active` — decorative color disappears 
 - The display face carries the personality. Choosing it is a `signature` decision — see
   `originality.md`. The body face is chosen for reading, not for character.
 
+### Deriving the scale
+
+The scale is derived per surface, not inherited. Six steps, in order:
+
+1. **Body size first**, from MODE: 16 px minimum for product UI, 17–20 px for editorial.
+   Everything else is computed from it, so this is the only number chosen by judgement.
+2. **Measure**, from the content: `max-inline-size` in `ch`, 60–75 for prose, narrower for
+   a column that sits beside something.
+3. **Line height**, from the measure and the face: longer measure and larger x-height both
+   want more leading. This fixes the vertical rhythm unit for the whole page.
+4. **Ratio**, from MODE and density: 1.2 for dense product UI, 1.25–1.333 for marketing.
+   Generate the steps; do not type sizes by hand.
+5. **Display step**, chosen separately. The display size is a composition decision from
+   `devices.md`, not the top rung of the ratio — the ladder gets you to the largest *text*
+   size, and the display moment usually sits above it.
+6. **Optical corrections per role**: tracking negative at display sizes, positive on small
+   caps and eyebrows; optical size axis set if the family has one.
+
+Write the result as tokens before writing a component. A scale that exists only in the
+components is not a scale.
+
 ## Color
 
 - Build the palette as 4–6 named values, not a spectrum. One dominant ground, one text,
@@ -58,6 +79,40 @@ Test every ramp against `forced-colors: active` — decorative color disappears 
   graphical objects that carry meaning. Check text over images and gradients at the worst
   pixel, not the average.
 - Muted text is where designs quietly fail. `#999` on white is 2.8:1. Not shippable.
+
+### Deriving the palette
+
+**No starter palette ships with this plugin, and that is deliberate.** Shipped values become
+the values every output starts from, which is banned default #4 in `originality.md` —
+"shipping the starter theme is now the single most recognizable AI look" — reproduced under
+a different name. What ships is the procedure.
+
+Six steps, from the provenance fact to the token file:
+
+1. **Take the COLOR provenance line** from `originality.md`: a fact about the subject's
+   material world, not a mood. The fact names a real thing with a real color — a material,
+   a substrate, an instrument, a notation, an environment.
+2. **Fix the ground.** Convert that thing's color to OKLCH and take it as the ground:
+   lightness 96–99 % for a light ground, 12–18 % for a dark one, chroma low (0.005–0.02).
+   The tint is what stops the page reading as default white or default near-black.
+3. **Fix the ink** as the same hue at the opposite end of the lightness range, chroma still
+   low. Ground and ink sharing a hue is most of what "considered" looks like.
+4. **Choose the accent hue by angle from the ground hue**, not by taste. Roughly 30–60°
+   apart reads as related; 150–210° reads as deliberate contrast. Set its chroma as high as
+   the palette will carry and its lightness so it clears 4.5:1 on the ground for text and
+   3:1 for boundaries — measure this, do not eyeball it. `../quality/measure.md`.
+5. **Generate the ramps** by stepping lightness at even perceptual intervals. Because OKLCH
+   lightness is perceptual, hover and active states become a lightness delta rather than a
+   hand-picked hex, and the ramp stays even without correction.
+6. **Add at most two supports**, and only for a job that exists: a semantic set for
+   success/warning/danger, or one neutral for borders. A color with no job is deleted.
+
+Then verify before building: every text pair, every boundary pair and the focus ring,
+against the ratios above. Run `forced-colors: active` and confirm meaning survives without
+color at all.
+
+The swap test applies to the result. If the palette would suit any product in the category,
+step 1 produced a mood rather than a fact — go back to it, not to step 4.
 
 ## Space and layout
 

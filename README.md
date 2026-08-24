@@ -92,9 +92,19 @@ Loaded on demand, never all at once:
 ```
 shared/stacks/    core · 3d-and-motion · dataviz-and-maps · editors-and-media
                   realtime-and-ai · platform
-shared/design/    modes · originality · spectacle · craft · copy
-shared/quality/   engineering · floor
+shared/design/    modes · landing · originality · devices · spectacle · craft · copy
+shared/quality/   engineering · measure · floor
 ```
+
+`shared/design/landing.md` is read whenever MODE is `marketing`. A landing page is an
+argument — claim, mechanism, proof, objection, action — written before any layout, with the
+hero picked from what the subject is rather than from a template, proof that is real or
+absent, and the tightest performance budget in the plugin.
+
+`shared/design/devices.md` is the positive repertoire. A blacklist alone lowers the floor
+without raising the ceiling: a rejected default leaves a gap that the next-nearest default
+fills. It names composition, type, color and detail devices with the condition each one
+needs and what it breaks on — to derive a replacement from, never to pick from.
 
 `shared/design/spectacle.md` decides whether depth, a shader, particles or ambient motion
 belong at all: every effect must reveal a mechanism, respond to the person, or repay
@@ -105,7 +115,41 @@ cut line before any code.
 `shared/quality/engineering.md` holds the budgets everything is measured against, and the
 loading details that expressive choices depend on — including the metric-matched font
 fallback that is the difference between CLS 0.14 and CLS 0.00, and is skipped almost every
-time.
+time. `shared/quality/measure.md` holds the command that produces each of those numbers, and
+what to report when the tool is not installed.
+
+## The render pass
+
+Design is not verifiable from source. A surface read as code is judged against what the
+reader expects code to produce — which is the same distribution the banned defaults came
+from. So `frontend-design` and `ship-audit` both stop, serve the surface, screenshot
+390 / 768 / 1440, and score it on five axes against the *images*: composition, type, color,
+density and rhythm, signature. The lowest axis is fixed, the page re-rendered, and the loop
+stops at two passes.
+
+Scoring 3 across the board is the template result. It is the most common outcome and it is a
+fail, not a midpoint. MODE decides what a good score means: on a product surface, scoring
+high on signature is a defect and is recorded as one.
+
+With no browser tool in the environment, the report says `not rendered` and `not scored` —
+never a design described as verified. Same rule as every other measurement here.
+
+## Scripts
+
+Two dependency-free checks, Node builtins only, run against the project being audited:
+
+```
+node scripts/contrast.mjs <pairs.json>   # WCAG ratios over a token pair list, hex or oklch
+node scripts/check-refs.mjs .            # every reference a skill points at exists
+```
+
+`node --test scripts/contrast.test.mjs scripts/check-refs.test.mjs` runs their tests.
+
+## Evals
+
+`evals/` holds three fixed briefs and the sheet they are scored on — a landing page at
+`signature`, a work surface at `quiet` where distinctiveness is the defect, and a brief that
+asks for particles by name. Manual, deliberately: one author, no runner, no CI.
 
 ## Install
 

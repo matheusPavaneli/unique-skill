@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Visual identity that belongs to the product, not to a template. Capability routing to the best stack, a binding design contract, and audited delivery.",
-    "version": "0.3.0"
+    "version": "0.4.0"
   },
   "plugins": [
     {
