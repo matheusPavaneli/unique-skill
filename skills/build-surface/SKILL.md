@@ -39,6 +39,11 @@ working code. Where `frontend-design` owns the look, this owns the wiring.
    - given a static placeholder of the exact final dimensions so it cannot shift layout;
    - disposed on unmount — GPU resources, listeners, workers, observers, sockets.
 
+   For a visual effect, the contract's effect spec (`shared/design/spectacle.md`) is the
+   acceptance test: the MAPPING is wired to the real quantity, the INPUT responds within the
+   stated time, every DEGRADE path exists as code, and the CUT LINE is measured — an effect
+   over its cut line is removed in this step, not carried to the audit.
+
    Domain-specific rules live in the `shared/stacks/` file that chose it. Read it again at
    integration time; choosing a library and using it correctly are different problems, and
    the performance rules in those files are where most of the value is.

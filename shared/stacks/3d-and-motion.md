@@ -6,6 +6,11 @@ scroll choreography, or orchestrated animation.
 Sizes are gzipped and approximate; verify before pinning. The ordering and the reasoning
 age much slower than the numbers.
 
+This file answers *how* and *how much*. It does not answer whether the effect is earned or
+what it should be about — that is `../design/spectacle.md`, and it is read first. A
+flawlessly built effect that is not about the subject is the most expensive way to look
+generic.
+
 ---
 
 ## The 3D fidelity ladder

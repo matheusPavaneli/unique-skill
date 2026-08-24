@@ -109,7 +109,8 @@ shorter than entrances, movement between two on-screen states uses a standard cu
 
 Library and technique choices for motion, scroll choreography, 3D and particles live in
 `../stacks/3d-and-motion.md`. This file sets the timings and the intent; that one sets the
-tool and the byte cost.
+tool and the byte cost. Whether an effect should exist at all, and what it should be about,
+is `spectacle.md` — decide that first.
 
 Blanket-killing every transition is acceptable and safe. Selectively preserving opacity
 fades is better. Never leave movement in.

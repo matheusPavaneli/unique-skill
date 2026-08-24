@@ -59,7 +59,7 @@ to be loud, and the accessibility and performance floor holds in every mode — 
 | --- | --- |
 | `product-brief` | Idea → subject, audience, surfaces, and the capability list, each marked core / supporting / decorative |
 | `stack-route` | Capabilities → one technology decision each, with cost, rejected alternative, fallback, and a summed ledger |
-| `frontend-design` | The binding design contract, the token system, and the visual craft |
+| `frontend-design` | The binding design contract, the token system, the visual craft, and whether an effect is earned |
 | `build-surface` | Implementation against contract and stack: semantics first, states before the happy path, heavy capabilities behind a lazy boundary |
 | `ship-audit` | Core Web Vitals, bundle, WCAG 2.2 AA, the state matrix, 320 px and 200 % zoom, and every promised fallback actually exercised |
 
@@ -92,9 +92,15 @@ Loaded on demand, never all at once:
 ```
 shared/stacks/    core · 3d-and-motion · dataviz-and-maps · editors-and-media
                   realtime-and-ai · platform
-shared/design/    modes · originality · craft · copy
+shared/design/    modes · originality · spectacle · craft · copy
 shared/quality/   engineering · floor
 ```
+
+`shared/design/spectacle.md` decides whether depth, a shader, particles or ambient motion
+belong at all: every effect must reveal a mechanism, respond to the person, or repay
+attention, priced by how often the surface is visited, derived from the subject's own verb
+rather than picked from a list, and specified with a parameter mapping, a degrade path and a
+cut line before any code.
 
 `shared/quality/engineering.md` holds the budgets everything is measured against, and the
 loading details that expressive choices depend on — including the metric-matched font

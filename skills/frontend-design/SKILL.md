@@ -19,6 +19,7 @@ Read only the reference the decision needs. All paths under `${CLAUDE_PLUGIN_ROO
 | `design/modes.md` | Always, at step 1 — routing and expression budget |
 | `design/originality.md` | ORIGINALITY is `signature` or `benchmark` |
 | `design/craft.md` | Any visual decision: type, color, space, motion, layout |
+| `design/spectacle.md` | Any 3D, shader, particle, ambient-motion or scroll-choreography idea — and always before spending a `loud` budget |
 | `design/copy.md` | Any user-visible words get written |
 | `quality/engineering.md` | Any code ships — perf, fonts, images, budgets |
 | `quality/floor.md` | Before "done" — a11y, state matrix, verification |
@@ -59,7 +60,10 @@ In thinking, held against the contract:
 1. **Tokens** — 4–6 named colors, 2–3 type roles, spacing scale, radius, elevation, motion
    durations. `design/craft.md`.
 2. **Layout** — one-sentence concept plus an ASCII wireframe. Compare at least two.
-3. **Signature** — where the budget is spent, and what stays quiet around it.
+3. **Signature** — where the budget is spent, and what stays quiet around it. If it
+   involves depth, an effect, particles or ambient motion, run `design/spectacle.md`:
+   derive the idiom from the subject's mechanism, generate three candidates at three
+   fidelity tiers, kill two, and write the effect spec block before any code.
 4. **Cost ledger** — every expressive choice priced against `quality/engineering.md` and
    against `.unique/stack.md` if it exists. Unpaid cost is a cut choice, not a caveat.
 5. **Gate** — `signature` or `benchmark` runs `design/originality.md` now, and revises

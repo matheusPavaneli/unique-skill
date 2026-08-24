@@ -30,7 +30,7 @@ individually reasonable libraries that together ship 900 KB and a 400 ms INP.
    | Capability | File |
    | --- | --- |
    | Framework, rendering, styling, components, state, data, forms, routing | `shared/stacks/core.md` |
-   | 3D, particles, shaders, generative graphics, motion, scroll, physics | `shared/stacks/3d-and-motion.md` |
+   | 3D, particles, shaders, generative graphics, motion, scroll, physics | `shared/stacks/3d-and-motion.md` (+ `shared/design/spectacle.md` first, to confirm the effect is earned and to fix its fidelity tier) |
    | Charts, dashboards, large datasets, maps, graphs, tables at scale | `shared/stacks/dataviz-and-maps.md` |
    | Rich text, code, whiteboard, canvas, image, video, audio, PDF | `shared/stacks/editors-and-media.md` |
    | Websockets, collaboration, presence, AI streaming UI, agents | `shared/stacks/realtime-and-ai.md` |
@@ -52,13 +52,19 @@ individually reasonable libraries that together ship 900 KB and a 400 ms INP.
    4. **Hosted service / designer runtime** — earned when authoring speed by non-engineers
       is the actual constraint. Price the runtime bytes and the vendor lock explicitly.
 
-6. **Match fidelity to role.** `core` capabilities get best-in-class and pay real bytes.
+6. **Gate the visual effects.** Before routing any 3D, shader, particle or ambient-motion
+   capability, run the gates in `shared/design/spectacle.md`. An effect that carries no
+   reveal, response or repay is cut here — not budgeted, not downgraded. An effect labelled
+   `decorative` whose idea only exists at T4/T5 is a mislabelled `core`: relabel it or drop
+   it, never quietly pay for it.
+
+7. **Match fidelity to role.** `core` capabilities get best-in-class and pay real bytes.
    `supporting` gets the cheapest thing that is solid. `decorative` gets a platform
    primitive or is cut. A decorative capability that costs more than a supporting one is
    inverted — fix it or drop it. Reference files carry a fidelity ladder per domain; name
    the tier, do not skip to the top of the ladder because it is more interesting.
 
-7. **Write one entry per capability.**
+8. **Write one entry per capability.**
 
    ```
    CAPABILITY  <the job, in the brief's words>
@@ -78,16 +84,16 @@ individually reasonable libraries that together ship 900 KB and a 400 ms INP.
    `FALLBACK` is mandatory for anything touching GPU, media, network, or motion. "It
    breaks" is an answer only if the brief accepts it.
 
-8. **Sum the ledger.** Total added KB against the budget from step 3. Over budget, cut in
+9. **Sum the ledger.** Total added KB against the budget from step 3. Over budget, cut in
    this order: decorative, then supporting, then downgrade a core capability's fidelity
    tier — never the accessibility floor, never the fallbacks. Report the total either way,
    including when it fits.
 
-9. **Verify before pinning versions.** Package versions in the reference files age. Check
+10. **Verify before pinning versions.** Package versions in the reference files age. Check
    the registry or docs for anything being installed for the first time, and note anything
    that has moved. Never invent a version number; if unchecked, say `latest, unverified`.
 
-10. **Write `.unique/stack.md`** and state what to run next: `frontend-design` for the
+11. **Write `.unique/stack.md`** and state what to run next: `frontend-design` for the
     visual contract, or `build-surface` if the contract already exists.
 
 ## Rules

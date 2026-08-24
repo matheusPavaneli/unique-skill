@@ -83,6 +83,17 @@ color    <4-6 named values>
 type     display <face> · body <face> · utility <face>
 scale    <spacing> · <radius> · <elevation> · <motion durations>
 
+## Effect spec         (only if the surface carries 3D, a shader, particles or ambient motion)
+IDIOM      <from the spectacle catalog>
+MECHANISM  <the subject's verb sentence being rendered>
+JOB        reveal | response | repay
+MAPPING    <visual parameter> <- <real quantity>
+INPUT      <cursor | scroll | data | input | none> — first meaningful frame in <n> ms
+TIER       <T0-T6> · <KB gz> · <main-thread cost>
+QUIET      <what gets quieter to pay for it>
+DEGRADE    reduced-motion / no-WebGL / low-power / mobile
+CUT LINE   <the measurement at which it is removed>
+
 ## Provenance          (signature and benchmark only)
 COLOR      <palette>   <- <fact about the subject>
 TYPE       <faces>     <- <fact>

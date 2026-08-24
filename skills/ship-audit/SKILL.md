@@ -51,10 +51,16 @@ as "not measured", never estimated as fact.**
    reduced motion, slow network, no JS where it matters, permission denied. A declared
    fallback that was never run is not a fallback.
 
-9. **Content.** No lorem ipsum, no placeholder logos, no invented metrics or testimonials
+9. **Effect spec.** If `.unique/contract.md` carries an effect spec, audit it as promises,
+   not as decoration: the MAPPING is wired to a real quantity rather than tuned constants,
+   the INPUT responds within its stated time, the effect is outside the LCP element, every
+   DEGRADE path was exercised by hand, and the measured cost is inside the CUT LINE. Over
+   the cut line is **blocking** — the spec already decided it gets removed.
+
+10. **Content.** No lorem ipsum, no placeholder logos, no invented metrics or testimonials
    presented as real, no raw exception text shown to a user.
 
-10. **Report.** Findings ordered by severity, each with `file:line` and a concrete fix.
+11. **Report.** Findings ordered by severity, each with `file:line` and a concrete fix.
     Separate **blocking** (accessibility failure, budget breach, broken state, missing
     fallback) from **should fix** from **noted**. State plainly which checks could not run
     in this environment and why. Then name the one thing worth removing.

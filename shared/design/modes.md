@@ -108,6 +108,9 @@ unusual interaction.
 | `measured` | 1 | most marketing, editorial features, product marketing pages |
 | `loud` | 3+ | portfolio, launch, campaign, brand site, art-directed editorial |
 
+Deciding *what* the loud element is — and whether an effect, 3D or particles belongs at
+all — is `spectacle.md`. Budget says how much; that file says whether and which.
+
 Rules:
 - Spend the budget in one place. Everything around the signature stays disciplined.
 - Loud costs are paid from the perf and a11y budget in `../quality/engineering.md`. A
