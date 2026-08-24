@@ -65,6 +65,20 @@ to be loud, and the accessibility and performance floor holds in every mode — 
 
 `/unique <idea>` resolves which step to enter from what already exists and runs from there.
 
+## Commands
+
+| Command | Runs |
+| --- | --- |
+| `/unique <idea>` | The full pipeline, entered at the right step |
+| `/product-brief <idea>` | `product-brief` alone |
+| `/stack-route <capability>` | `stack-route` alone |
+| `/frontend-design <surface>` | `frontend-design` alone |
+| `/build-surface <surface>` | `build-surface` alone |
+| `/ship-audit [path]` | `ship-audit` alone |
+
+Skills also load on their own when the work calls for them — the commands are for entering
+a single step directly.
+
 ## Artifacts
 
 Decisions are written to `.unique/` in the project — `brief.md`, `stack.md`,
