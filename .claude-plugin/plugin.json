@@ -1,7 +1,7 @@
 {
   "name": "unique",
   "version": "0.4.0",
-  "description": "Generates visuals that are unique to the product they are for. Frames the product, routes every capability to the best stack for that job (3D, particles, data viz, editors, realtime, AI UI), commits to a design contract that separates 'make it unique' from 'as good as Stripe' from 'match our system', then builds and audits against real performance and accessibility budgets.",
+  "description": "Generates visuals that are unique to the product they are for. Frames the product, routes every capability to the best stack for that job (3D, particles, data viz, editors, realtime, AI UI), commits to a design contract that separates 'make it unique' from 'as good as Stripe' from 'match our system', carries real landing-page doctrine and a repertoire of compositional devices to replace the defaults it bans, then builds, renders the result and scores it on screen, and audits against real performance and accessibility budgets with the command behind every number.",
   "author": {
     "name": "matheusPavaneli",
     "url": "https://github.com/matheusPavaneli"
