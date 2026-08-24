@@ -19,15 +19,50 @@ function fixture(files) {
   return root;
 }
 
-test('extracts only backticked paths that contain a slash and end in .md', () => {
-  const refs = extractRefs('see `design/craft.md` and `brief.md` and `shared/x` and `a/b.md`');
-  assert.deepEqual(refs, ['design/craft.md', 'a/b.md']);
+test('extracts backticked .md tokens with or without a directory part', () => {
+  const refs = extractRefs('see `design/craft.md` and `devices.md` and `shared/x` and `a/b.md`');
+  assert.deepEqual(refs, ['design/craft.md', 'devices.md', 'a/b.md']);
+});
+
+test('a token with a space in it is not a path', () => {
+  assert.deepEqual(extractRefs('the `read this.md` line'), []);
 });
 
 test('runtime artifact paths are not repository references', () => {
   assert.equal(isRuntimePath('.unique/contract.md'), true);
   assert.equal(isRuntimePath('${CLAUDE_PLUGIN_ROOT}/.unique/log.md'), true);
   assert.equal(isRuntimePath('shared/design/craft.md'), false);
+});
+
+test('bare artifact names the skills write at run time are not repository references', () => {
+  // `.unique/stack.md` is referred to as `stack.md` in prose; the file never exists here
+  for (const name of ['brief.md', 'stack.md', 'contract.md', 'log.md']) {
+    assert.equal(isRuntimePath(name), true, name);
+  }
+  assert.equal(isRuntimePath('devices.md'), false);
+});
+
+test('a same-directory reference resolves', () => {
+  const root = fixture({
+    'shared/design/devices.md': '# devices',
+    'shared/design/originality.md': 'the repertoire is `devices.md`',
+  });
+  try {
+    assert.deepEqual(checkRefs(root), []);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+});
+
+test('a dangling same-directory reference is reported', () => {
+  const root = fixture({ 'shared/design/originality.md': 'see `devicez.md`' });
+  try {
+    assert.deepEqual(checkRefs(root), [
+      { file: 'shared/design/originality.md', ref: 'devicez.md' },
+    ]);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test('an existing reference produces no finding', () => {

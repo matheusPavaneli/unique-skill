@@ -139,9 +139,17 @@ never a design described as verified. Same rule as every other measurement here.
 Two dependency-free checks, Node builtins only, run against the project being audited:
 
 ```
-node scripts/contrast.mjs <pairs.json>   # WCAG ratios over a token pair list, hex or oklch
-node scripts/check-refs.mjs .            # every reference a skill points at exists
+node "${CLAUDE_PLUGIN_ROOT}/scripts/contrast.mjs" <pairs.json>
+node "${CLAUDE_PLUGIN_ROOT}/scripts/check-refs.mjs" <repo>
 ```
+
+`contrast.mjs` computes WCAG ratios over a token pair list, hex or `oklch()`, gamut-mapping
+anything outside sRGB the way a browser would rather than clipping it into a ratio that
+flatters. `check-refs.mjs` verifies every reference file a skill points at exists — a
+dangling one degrades a skill silently at run time.
+
+The paths are plugin-relative because these run against the project being audited, not from
+inside this repository.
 
 `node --test scripts/contrast.test.mjs scripts/check-refs.test.mjs` runs their tests.
 

@@ -19,7 +19,7 @@ Read only the reference the decision needs. All paths under `${CLAUDE_PLUGIN_ROO
 | `design/modes.md` | Always, at step 1 — routing and expression budget |
 | `design/landing.md` | MODE is `marketing` — the page's argument, hero, proof, pricing, conversion |
 | `design/originality.md` | ORIGINALITY is `signature` or `benchmark` |
-| `design/devices.md` | With `originality.md`, at layout and composition time — what to move *to* once a default is rejected |
+| `design/devices.md` | With `design/originality.md`, at layout and composition time — what to move *to* once a default is rejected |
 | `design/craft.md` | Any visual decision: type, color, space, motion, layout |
 | `design/spectacle.md` | Any 3D, shader, particle, ambient-motion or scroll-choreography idea — and always before spending a `loud` budget |
 | `design/copy.md` | Any user-visible words get written |

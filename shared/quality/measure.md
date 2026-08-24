@@ -133,8 +133,12 @@ Every text pair, boundary pair and the focus ring, against the ratios in `../des
 The plugin ships a dependency-free checker for a token pair list:
 
 ```bash
-node scripts/contrast.mjs tokens.json
+node "${CLAUDE_PLUGIN_ROOT}/scripts/contrast.mjs" tokens.json
 ```
+
+The script lives in the plugin, not in the project being audited — a bare
+`node scripts/contrast.mjs` runs in the project's working directory and dies with
+`MODULE_NOT_FOUND`.
 
 `tokens.json` is a list of `{ name, fg, bg, size }` entries; `fg` and `bg` accept hex or
 `oklch()`. `size` is `body` (4.5:1), `large` (3:1) or `ui` (3:1 for boundaries and graphical

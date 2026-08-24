@@ -21,7 +21,7 @@ function encode(linear) {
   return Math.round(s * 255);
 }
 
-function fromOklch(lightness, chroma, hueDeg) {
+function linearFromOklch(lightness, chroma, hueDeg) {
   const h = (hueDeg * Math.PI) / 180;
   const a = chroma * Math.cos(h);
   const b = chroma * Math.sin(h);
@@ -35,10 +35,45 @@ function fromOklch(lightness, chroma, hueDeg) {
   const s = s_ ** 3;
 
   return {
-    r: encode(4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s),
-    g: encode(-1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s),
-    b: encode(-0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s),
+    r: 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+    g: -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+    b: -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s,
   };
+}
+
+const GAMUT_EPSILON = 1e-5;
+
+function inGamut({ r, g, b }) {
+  return [r, g, b].every((v) => v >= -GAMUT_EPSILON && v <= 1 + GAMUT_EPSILON);
+}
+
+/**
+ * Convert oklch() to sRGB, reducing chroma until the color fits the gamut.
+ *
+ * Clamping each channel independently — which is what encode() alone does — is not what a
+ * browser paints. Clipping an overflowing channel changes the luminance, and it changes it
+ * in the direction that *inflates* the contrast ratio: a checker whose entire job is to not
+ * lie about contrast would report a pass for a pair that fails on screen. Reducing chroma at
+ * constant lightness and hue is the cheap approximation of CSS Color 4 gamut mapping, and
+ * `mapped` is carried through to the report so the substitution is never silent.
+ */
+function fromOklch(lightness, chroma, hueDeg) {
+  let linear = linearFromOklch(lightness, chroma, hueDeg);
+  let mapped = false;
+
+  if (!inGamut(linear)) {
+    mapped = true;
+    let fits = 0;
+    let exceeds = chroma;
+    for (let i = 0; i < 24; i += 1) {
+      const mid = (fits + exceeds) / 2;
+      if (inGamut(linearFromOklch(lightness, mid, hueDeg))) fits = mid;
+      else exceeds = mid;
+    }
+    linear = linearFromOklch(lightness, fits, hueDeg);
+  }
+
+  return { r: encode(linear.r), g: encode(linear.g), b: encode(linear.b), mapped };
 }
 
 /**
@@ -65,6 +100,7 @@ export function parseColor(input) {
       r: parseInt(full.slice(0, 2), 16),
       g: parseInt(full.slice(2, 4), 16),
       b: parseInt(full.slice(4, 6), 16),
+      mapped: false,
     };
   }
 
@@ -87,12 +123,23 @@ export function relativeLuminance({ r, g, b }) {
   return 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
 }
 
+/**
+ * WCAG contrast ratio plus whether either color had to be gamut-mapped to get there.
+ * A mapped color is not the color that was written, so the ratio is for the color that
+ * would actually be painted — and the caller is told.
+ */
+export function ratioWithGamut(foreground, background) {
+  const fg = parseColor(foreground);
+  const bg = parseColor(background);
+  const a = relativeLuminance(fg);
+  const b = relativeLuminance(bg);
+  const [hi, lo] = a >= b ? [a, b] : [b, a];
+  return { ratio: (hi + 0.05) / (lo + 0.05), mapped: fg.mapped || bg.mapped };
+}
+
 /** WCAG contrast ratio, 1 to 21, order-independent. */
 export function contrastRatio(foreground, background) {
-  const a = relativeLuminance(parseColor(foreground));
-  const b = relativeLuminance(parseColor(background));
-  const [hi, lo] = a >= b ? [a, b] : [b, a];
-  return (hi + 0.05) / (lo + 0.05);
+  return ratioWithGamut(foreground, background).ratio;
 }
 
 /**
@@ -110,14 +157,14 @@ export function checkPairs(entries) {
     const required = THRESHOLDS[size];
 
     if (required === undefined) {
-      return { name, size, required: null, ratio: null, pass: false,
+      return { name, size, required: null, ratio: null, pass: false, mapped: false,
         error: `unknown size "${size}" (expected ${Object.keys(THRESHOLDS).join(', ')})` };
     }
     try {
-      const ratio = contrastRatio(entry.fg, entry.bg);
-      return { name, size, required, ratio, pass: ratio >= required, error: null };
+      const { ratio, mapped } = ratioWithGamut(entry.fg, entry.bg);
+      return { name, size, required, ratio, mapped, pass: ratio >= required, error: null };
     } catch (err) {
-      return { name, size, required, ratio: null, pass: false, error: err.message };
+      return { name, size, required, ratio: null, mapped: false, pass: false, error: err.message };
     }
   });
 }
@@ -130,7 +177,8 @@ export function formatResult(result) {
     : result.pass
       ? ''
       : ` — needs ${result.required}:1 for ${result.size}`;
-  return `${mark}  ${ratio}  ${result.name}${detail}`;
+  const gamut = result.mapped ? '  [gamut-mapped: outside sRGB as written]' : '';
+  return `${mark}  ${ratio}  ${result.name}${detail}${gamut}`;
 }
 
 export function loadPairs(path) {
@@ -160,6 +208,11 @@ function main(argv) {
   } catch (err) {
     console.error(err.message);
     if (err.cause) console.error(`  cause: ${err.cause.message}`);
+    return 2;
+  }
+
+  if (results.length === 0) {
+    console.error(`${path} contains no pairs — nothing was checked`);
     return 2;
   }
 

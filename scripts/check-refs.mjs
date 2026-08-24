@@ -6,17 +6,24 @@
 // Usage: node scripts/check-refs.mjs [repo-root]
 // Node builtins only.
 
-import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, lstatSync, existsSync } from 'node:fs';
 import { join, dirname, resolve, relative, sep } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 /** Paths written at run time in the user's project, not in this repository. */
 export const RUNTIME_PREFIXES = ['.unique/', '.workflow/'];
 
+/** Artifact files the skills write into the user's project, referenced by bare name. */
+export const RUNTIME_BASENAMES = ['brief.md', 'stack.md', 'contract.md', 'log.md'];
+
 const PLUGIN_ROOT_TOKEN = '${CLAUDE_PLUGIN_ROOT}/';
 
-/** Any backticked token containing a slash and ending in .md. */
-const CANDIDATE = /`([^`\n]*\/[^`\n]*\.md)`/g;
+/**
+ * Any backticked token ending in .md, with or without a directory part. Same-directory
+ * references are the majority in shared/ and a typo in one of them ships silently, so the
+ * slash is not required.
+ */
+const CANDIDATE = /`([^`\n\s]+\.md)`/g;
 
 export function collectMarkdown(dir) {
   if (!existsSync(dir)) return [];
@@ -24,8 +31,12 @@ export function collectMarkdown(dir) {
   for (const entry of readdirSync(dir)) {
     if (entry === 'node_modules' || entry.startsWith('.git')) continue;
     const full = join(dir, entry);
-    if (statSync(full).isDirectory()) out.push(...collectMarkdown(full));
-    else if (entry.endsWith('.md')) out.push(full);
+    // lstat, not stat: a directory symlink pointing at an ancestor would recurse forever,
+    // and a broken symlink would throw ENOENT and take the whole run down with it.
+    const info = lstatSync(full, { throwIfNoEntry: false });
+    if (info === undefined) continue;
+    if (info.isDirectory()) out.push(...collectMarkdown(full));
+    else if (info.isFile() && entry.endsWith('.md')) out.push(full);
   }
   return out;
 }
@@ -38,7 +49,8 @@ export function extractRefs(text) {
 
 export function isRuntimePath(ref) {
   const bare = ref.startsWith(PLUGIN_ROOT_TOKEN) ? ref.slice(PLUGIN_ROOT_TOKEN.length) : ref;
-  return RUNTIME_PREFIXES.some((prefix) => bare.startsWith(prefix));
+  if (RUNTIME_PREFIXES.some((prefix) => bare.startsWith(prefix))) return true;
+  return !bare.includes('/') && RUNTIME_BASENAMES.includes(bare);
 }
 
 /**

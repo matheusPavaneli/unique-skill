@@ -6,13 +6,20 @@ import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-import { parseColor, contrastRatio, checkPairs, loadPairs, THRESHOLDS } from './contrast.mjs';
+import {
+  parseColor,
+  contrastRatio,
+  ratioWithGamut,
+  checkPairs,
+  loadPairs,
+  THRESHOLDS,
+} from './contrast.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const script = join(here, 'contrast.mjs');
 
 test('six-digit hex parses to its channels', () => {
-  assert.deepEqual(parseColor('#767676'), { r: 0x76, g: 0x76, b: 0x76 });
+  assert.deepEqual(parseColor('#767676'), { r: 0x76, g: 0x76, b: 0x76, mapped: false });
 });
 
 test('three-digit hex expands to the same color as its six-digit form', () => {
@@ -30,6 +37,26 @@ test('oklch parses to the same ratio as its hex equivalent', () => {
 
 test('oklch accepts a unitless lightness as well as a percentage', () => {
   assert.deepEqual(parseColor('oklch(1 0 0)'), parseColor('oklch(100% 0 0)'));
+});
+
+test('an oklch color outside sRGB is gamut-mapped, not clipped into a flattering ratio', () => {
+  // clipping each linear channel independently lowers luminance and inflates the ratio:
+  // this pair reads 4.00:1 clipped and 2.90:1 as a browser actually paints it
+  const { ratio, mapped } = ratioWithGamut('oklch(70% 0.35 30)', '#ffffff');
+  assert.equal(mapped, true);
+  assert.ok(ratio < 3, `expected the mapped ratio below the 3:1 ui threshold, got ${ratio}`);
+  assert.ok(ratio > 2.5, `expected a plausible mapped ratio, got ${ratio}`);
+});
+
+test('an in-gamut oklch color is not reported as mapped', () => {
+  assert.equal(ratioWithGamut('oklch(45% 0.11 250)', '#ffffff').mapped, false);
+  assert.equal(ratioWithGamut('#767676', '#ffffff').mapped, false);
+});
+
+test('a gamut-mapped pair carries the flag through to the result', () => {
+  const [result] = checkPairs([{ name: 'brand', fg: 'oklch(70% 0.35 30)', bg: '#ffffff', size: 'ui' }]);
+  assert.equal(result.mapped, true);
+  assert.equal(result.pass, false);
 });
 
 test('an unreadable color throws rather than defaulting to black', () => {
@@ -131,6 +158,29 @@ test('the CLI exits 1 when a pair fails and 0 when none do', () => {
     rmSync(failing, { force: true });
     rmSync(passing, { force: true });
   }
+});
+
+test('an empty pair list exits 2 rather than reporting a green zero', () => {
+  const empty = join(tmpdir(), `contrast-empty-${process.pid}.json`);
+  writeFileSync(empty, '[]');
+  try {
+    assert.throws(
+      () => execFileSync(process.execPath, [script, empty], { stdio: 'pipe' }),
+      (err) => err.status === 2,
+      'checking nothing must not read as "0 failures"',
+    );
+  } finally {
+    rmSync(empty, { force: true });
+  }
+});
+
+test('the shipped fixture needs no gamut mapping', () => {
+  const results = checkPairs(loadPairs(join(here, '..', 'evals', 'cases', 'tokens.sample.json')));
+  assert.deepEqual(
+    results.filter((r) => r.mapped).map((r) => r.name),
+    [],
+    'the sample tokens are an example to copy; they should sit inside sRGB as written',
+  );
 });
 
 test('running the shipped fixture reports every pair as passing', () => {

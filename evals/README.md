@@ -7,8 +7,6 @@ they are scored on, so that two runs months apart are comparable.
 
 ## The metric
 
-From `.workflow/idea-unique-design-ceiling/frame.md`:
-
 > **Redesign rate** — of surfaces built at `MODE=marketing` and `ORIGINALITY=signature`, the
 > share where the author asks for a visual redo after the first delivery. Target: under 1 in 3.
 
