@@ -1,0 +1,28 @@
+{
+  "name": "unique",
+  "owner": {
+    "name": "matheusPavaneli",
+    "url": "https://github.com/matheusPavaneli"
+  },
+  "metadata": {
+    "description": "Visual identity that belongs to the product, not to a template. Capability routing to the best stack, a binding design contract, and audited delivery.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "unique",
+      "source": "./",
+      "description": "Generates visuals that are unique to the product they are for, and builds them on the right stack. Five skills: product-brief turns an idea into surfaces and capabilities; stack-route picks the best technology per capability against one shared byte and main-thread budget, with a platform-primitive-first rubric and a fidelity ladder for 3D, particles, data viz, editors, realtime and AI UI — every choice recorded with its rejected alternative and its fallback; frontend-design commits to a design contract that separates 'make it unique' (falsifiable originality gates, provenance tracing every color and typeface to a fact about the subject) from 'as good as Stripe' (borrow the craft bar, never the look) from 'match our system'; build-surface implements semantics and states before the happy path, with heavy capabilities behind a lazy boundary; ship-audit verifies Core Web Vitals, WCAG 2.2 AA, the state matrix and the bundle budget before anything is called done. Decisions are written to .unique/ so later sessions inherit them instead of re-deciding.",
+      "category": "development",
+      "keywords": [
+        "frontend",
+        "design",
+        "stack-selection",
+        "webgl",
+        "three-js",
+        "performance",
+        "accessibility"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "unique",
+  "version": "0.1.0",
+  "description": "Generates visuals that are unique to the product they are for. Frames the product, routes every capability to the best stack for that job (3D, particles, data viz, editors, realtime, AI UI), commits to a design contract that separates 'make it unique' from 'as good as Stripe' from 'match our system', then builds and audits against real performance and accessibility budgets.",
+  "author": {
+    "name": "matheusPavaneli",
+    "url": "https://github.com/matheusPavaneli"
+  },
+  "homepage": "https://github.com/matheusPavaneli/unique-skill",
+  "repository": "https://github.com/matheusPavaneli/unique-skill",
+  "license": "MIT",
+  "keywords": [
+    "frontend",
+    "design",
+    "stack-selection",
+    "webgl",
+    "three-js",
+    "performance",
+    "accessibility",
+    "react",
+    "ui-engineering"
+  ]
+}
