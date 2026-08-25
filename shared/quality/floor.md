@@ -87,6 +87,12 @@ one.
 10. **Subtract one.** Remove the least load-bearing decorative element and confirm the
     design is better for it. Name what was removed.
 
+11. **Contract holds.** `node ${CLAUDE_PLUGIN_ROOT}/scripts/check-contract.mjs .unique` — the
+    five contract lines, the grid block in numbers, a provenance fact per axis, two rejected
+    directions, the five rubric scores, and no repeated triple in `log.md`. It checks that
+    the decisions were made and recorded, not that they were good ones; a clean run is the
+    floor, not the ceiling.
+
 Report honestly. A failed check named is worth more than a checklist claimed. If a step
 could not run in this environment, say which and why.
 
@@ -107,13 +113,32 @@ reader expects code to produce, which is the same distribution the banned defaul
 5. **Re-render and re-score.** Two passes maximum, then stop and report the remaining
    score. A third pass is thrash, not craft.
 
-**Tools, in order of preference:** the project's own Playwright or Puppeteer if it has one ·
-a browser MCP server · `npx playwright screenshot` · a headless Chrome invocation.
+**Run it with the plugin's own script.** It resolves the browser itself, so "no browser
+tool" is no longer a reason to skip the step:
 
-**When there is no browser available at all:** report `not rendered — no browser tool in
-this environment` as a finding, alongside the rubric line `not scored`. Never skip it
-silently, never score the rubric from source, and never describe the design as verified.
-The surface is delivered as unverified, and the report says so in those words.
+```bash
+node ${CLAUDE_PLUGIN_ROOT}/scripts/render.mjs http://localhost:3000 .unique/render
+```
+
+It waits for the server, prefers the project's own Playwright, falls back to fetching it
+through `npx`, and captures 390 / 768 / 1440 full-page **plus** 320 px and 1440-at-200 %-zoom
+— the two compliance cases that fail silently when nobody looks at them. Then read the PNGs.
+
+Other acceptable tools, if the project already has one: its own Playwright or Puppeteer
+script, or a browser MCP server. A tool that produces a viewport crop instead of a full page
+is not acceptable — the part of a page that goes generic is below the fold.
+
+**This step is blocking.** A surface with no five numbers written down is not done, and the
+rubric is never scored from source. There are exactly two legitimate outcomes:
+
+- Five numbers, scored against the images.
+- `not rendered — <the specific reason the script failed>`, quoted from its output, plus the
+  rubric line `not scored`, plus the words "delivered unverified" in the report.
+
+"No browser tool in this environment" is no longer one of those reasons on its own: say what
+`render.mjs` actually reported — nothing served at that URL, the network refused the install,
+the build never started. A vague unavailability is the escape hatch this step exists to
+close, because it is also the cheapest path and it was becoming the default one.
 
 ## The rubric
 
@@ -129,7 +154,11 @@ Five axes, 1–5, scored against the screenshot.
 
 Read the axis descriptions as the failure and the target, not as a grading curve. Scoring a
 3 across the board is the template result — it is the most common outcome and it is a fail,
-not a pass.
+not a pass. `check-contract.mjs` treats it as one.
+
+Write the five numbers into `.unique/contract.md` under `## Rubric`, one axis per line. A
+score that lives only in the response cannot be compared against the next pass, which is the
+only thing that tells you whether the work is improving.
 
 **MODE changes what a good score means, and never lowers the floor.** On `product-surface`
 and `native`, Signature scoring high is a *defect* — record it as such rather than

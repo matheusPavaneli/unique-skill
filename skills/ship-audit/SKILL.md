@@ -21,12 +21,17 @@ as "not measured", never estimated as fact.**
 2. **Build.** Must compile clean: no type errors, no console errors, no React key warnings,
    no unhandled rejections. A warning treated as noise here is a bug found in production.
 
-3. **Render and score.** Serve the surface and screenshot 390 / 768 / 1440. Score the
-   five-axis rubric in `${CLAUDE_PLUGIN_ROOT}/shared/quality/floor.md` against the images
-   and report the five numbers. An audit that never looked at the page audited a build, not
-   a design. No browser tool available → report `not rendered — no browser tool in this
-   environment` and `not scored` as findings, the same way any other unrunnable check is
-   reported here. Never score from source.
+3. **Render and score.** `node ${CLAUDE_PLUGIN_ROOT}/scripts/render.mjs <url> .unique/render`
+   — it resolves the browser itself and shoots 390 / 768 / 1440 plus 320 px and 200 % zoom.
+   Score the five-axis rubric in `${CLAUDE_PLUGIN_ROOT}/shared/quality/floor.md` against the
+   images and report the five numbers. An audit that never looked at the page audited a
+   build, not a design. If the script genuinely fails → report `not rendered — <its reason>`
+   and `not scored` as findings, the same way any other unrunnable check is reported here.
+   Never score from source.
+
+   Then `node ${CLAUDE_PLUGIN_ROOT}/scripts/check-contract.mjs .unique`: a surface whose
+   contract has no grid block, no provenance fact per axis, or no rubric scores was not
+   audited against a design decision, because none was recorded.
 
 4. **Bundle.** Read the build output. Initial JS per route against the budget. Find what is
    in the initial chunk that should not be — a chart library, an editor, a 3D runtime, a

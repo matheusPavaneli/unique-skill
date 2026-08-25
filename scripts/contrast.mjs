@@ -77,6 +77,12 @@ function fromOklch(lightness, chroma, hueDeg) {
 }
 
 /**
+ * oklch(L C H) to 8-bit sRGB with chroma-reduction gamut mapping, exported so the palette
+ * generator paints the same colors this checker measures. One conversion, one gamut policy.
+ */
+export { fromOklch as oklchToSrgb, inGamut as linearInGamut, linearFromOklch };
+
+/**
  * Parse a hex or oklch() color to 8-bit sRGB.
  * Throws rather than defaulting: a color we cannot read is a finding, not black.
  */

@@ -78,10 +78,25 @@ ORIGINALITY  native | benchmark(<reference>) | signature
 BUDGET       quiet | measured | loud
 SIGNATURE    <the one thing a person remembers, or "none, this is plumbing">
 
+## Directions        (signature and benchmark only — three, from three different facts)
+A  <name>   COLOR <- <fact> · TYPE <- <fact> · LAYOUT <- <fact> · SIGNATURE <- <fact>
+B  <name>   ...
+C  <name>   ...
+KILL <B> — <reason, in the brief's terms>
+KILL <C> — <reason>
+
 ## Tokens
-color    <4-6 named values>
+color    <4-6 named values, in oklch(), from scripts/palette.mjs>
 type     display <face> · body <face> · utility <face>
 scale    <spacing> · <radius> · <elevation> · <motion durations>
+
+## Grid
+PATH     <where the eye lands, then goes — three or four stops>
+DENSITY  <which sections are dense, which are near-empty>
+COLUMNS  <count and ratio, and whether it holds or alternates>
+MEASURE  <max-inline-size in ch, per content role>
+RHYTHM   <baseline unit in px, section padding as multiples of it>
+BLEED    <exactly which elements break the measure, and above which width>
 
 ## Effect spec         (only if the surface carries 3D, a shader, particles or ambient motion)
 IDIOM      <from the spectacle catalog>
@@ -104,9 +119,22 @@ SIGNATURE  <element>   <- <fact>
 BORROWED   <craft invariant> from <reference>
 INVENTED   <axis>, from <provenance fact>
 
+## Rubric            (the five numbers from the render pass, scored against the screenshots)
+composition: <1-5>
+type: <1-5>
+color: <1-5>
+density: <1-5>
+signature: <1-5>
+
 ## Rejected
 - <direction> — <why>
+- <direction> — <why>
 ```
+
+Validate it with `node ${CLAUDE_PLUGIN_ROOT}/scripts/check-contract.mjs .unique` before
+calling the surface done. `## Grid`, `## Rubric` and — at `signature` or `benchmark` — the
+provenance and rejected sections are required, because a decision that left no trace is
+indistinguishable from one that was never made.
 
 ## `log.md`
 
@@ -124,4 +152,5 @@ rejected: <one line>
 ```
 
 Read it before planning. Never repeat a previous entry's `(palette family, display face,
-layout device)` triple within the same project.
+layout device)` triple within the same project — `check-contract.mjs` fails the run when two
+entries share one.

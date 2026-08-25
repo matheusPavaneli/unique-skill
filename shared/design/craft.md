@@ -68,6 +68,73 @@ The scale is derived per surface, not inherited. Six steps, in order:
 Write the result as tokens before writing a component. A scale that exists only in the
 components is not a scale.
 
+### Deriving the typeface
+
+The palette gets six steps and the face got one sentence, so the face was the axis chosen by
+reflex — and the reflex reaches for whatever geometric-display-plus-neutral-body pairing has
+been used most, which is banned default #12. Five steps, same shape as the palette.
+
+1. **Take the TYPE provenance line** from `originality.md`. Same rule as color: a fact about
+   the subject's material world, not a mood. The fact usually names either the subject's own
+   notation (what the field writes in) or its paperwork (what it prints on).
+2. **Read the fact for a class**, not a name. The classes and what each one needs:
+
+   | Class | The fact that earns it | Reads as |
+   | --- | --- | --- |
+   | Transitional / old-style serif | The subject predates the screen, or is about reading, record and authority | Considered, editorial, slow |
+   | Modern / didone | High contrast is literally in the subject — engraving, fashion plate, masthead | Sharp, formal, fragile at small sizes |
+   | Slab | Industrial, printed-on-the-object, catalogue and specification | Sturdy, plain-spoken |
+   | Grotesque (19th c.) | Signage, transit, wayfinding, notice boards | Public, matter-of-fact |
+   | Neo-grotesque | The subject is a system, an interface, an instrument panel | Neutral by design — and it is the class the defaults live in |
+   | Humanist sans | Written by hand before it was typed; teaching, care, service | Warm, legible, unshowy |
+   | Geometric sans | Bauhaus-adjacent, drawn from circles, industrial design | Constructed — and heavily overused |
+   | Monospace | The field's real notation is fixed-width: code, logs, tables, telemetry | Technical when true, costume when not |
+   | Display / one-off | The subject has a single strong artifact — a sign, a label, a title | The whole identity, at one size only |
+   | Text with real provenance | A face historically tied to this field, trade or place | Unfakeable, when the tie is genuine |
+
+3. **Name three candidates in that class**, from families you can actually load — check the
+   licence and the file before committing. Then kill two, in writing, on fit rather than
+   taste: what the face does at the display size shipped, whether it holds at 14 px, whether
+   it has the features the content needs (tabular figures, small caps, an optical size axis).
+4. **Decide one face or two.** Two faces need two facts — the material *and* its notation,
+   the craft *and* its paperwork. One fact means one face; carry the range with optical size,
+   weight, width and case instead. `devices.md`, "one face, many registers".
+5. **Price it.** Weights and axes actually used, subset, `KB` gz, `font-display: swap`, and
+   the metric-matched fallback that holds the layout. `../quality/engineering.md`. A face
+   that costs more than the budget allows is a cut face, not a caveat.
+
+**Where to look, once the class is decided.** The class table above is useless if the only
+family names in reach are the four defaults, which is exactly why they keep winning. Go to a
+source and read specimens rather than recalling names:
+
+| Source | What it is good for |
+| --- | --- |
+| Google Fonts (variable filter) | 500+ variable families, all self-hostable, safe licences |
+| Fontshare (Indian Type Foundry) | Contemporary display and text families, free for commercial use |
+| Velvetyne | Libre, deliberately rough and sharp — the antidote to a neutral grotesque |
+| Etcetera Type Co | Libre, unusually strong variable display work |
+| The League of Moveable Type | The original libre foundry; plain, sturdy text faces |
+| Fontsource | Not a foundry — the packaging layer for self-hosting any of the above |
+
+Check three things before committing, in this order: the licence permits the use, the file
+has the axes and features the content needs, and the face still works at the smallest size it
+will be set. Then subset and self-host as WOFF2 — a subsetted local file beats a CDN request.
+
+**Parametric axes are how one face carries a whole page.** A family with `opsz`, `wght`,
+`wdth` and `GRAD` (Roboto Flex is the widest example) gives display, body, caption and label
+registers from one download, with optical corrections that a scaled single master cannot
+produce. This is what makes "one face, many registers" in `devices.md` a real option and often
+the cheapest one on the page.
+
+Two guardrails:
+
+- **The body face is chosen for reading, not for character.** It may be conventional. It may
+  even be the system stack. The display face is the `signature` decision.
+- **In `product-surface` and `native`, a default UI face is the right answer**, and none of
+  the above applies to UI chrome. `Inter` on a dashboard is an engineering choice, not a
+  failure. The tell is a default face carrying *identity* on a page whose job is to be
+  unmistakable.
+
 ## Color
 
 - Build the palette as 4–6 named values, not a spectrum. One dominant ground, one text,
@@ -107,6 +174,20 @@ Six steps, from the provenance fact to the token file:
 6. **Add at most two supports**, and only for a job that exists: a semantic set for
    success/warning/danger, or one neutral for borders. A color with no job is deleted.
 
+**Run the procedure, do not perform it.** `${CLAUDE_PLUGIN_ROOT}/scripts/palette.mjs` does
+steps 2–6 arithmetically from a spec naming the fact and its hue:
+
+```bash
+echo '{"fact":"unfired earthenware body","hue":55,"scheme":"light","accent":"contrast"}' > .unique/palette.json
+node ${CLAUDE_PLUGIN_ROOT}/scripts/palette.mjs .unique/palette.json
+```
+
+It emits the token block and then measures every pair that matters — body, muted, accent
+text, the button label, both boundaries and the focus ring on both grounds — exiting non-zero
+if one fails. Chroma is clamped to what sRGB will actually paint, so the token written is the
+color painted. Colors invented in the head converge on the colors seen most, which is banned
+default #4 wearing a different name; the only judgement this leaves is step 1, the fact.
+
 Then verify before building: every text pair, every boundary pair and the focus ring,
 against the ratios above. Run `forced-colors: active` and confirm meaning survives without
 color at all.
@@ -114,7 +195,125 @@ color at all.
 The swap test applies to the result. If the palette would suit any product in the category,
 step 1 produced a mood rather than a fact — go back to it, not to step 4.
 
+### How much of each color
+
+A correct palette still reads generic when it is spread evenly. Distribution is the part that
+shows in the screenshot:
+
+- **Ground carries the page.** The dominant ground plus its one step (`--surface-raised`) is
+  most of the pixels. If a page has four background colors, it has none.
+- **Ink does the work.** Hierarchy comes from lightness and weight on the ink, not from
+  reaching for another hue. `devices.md`, "ink weight instead of hue".
+- **The accent is measured in square centimetres, not in percent.** On a full page it should
+  be the primary action, and at most one or two other marks. Three accent-colored things and
+  the accent means nothing. `devices.md`, "accent by frequency, not by area".
+- **Supports stay support.** Semantic states appear only in states. A color with no job is
+  deleted — that is step 6, and it is the step most often skipped.
+
+Depth comes from stacked grounds before it comes from shadow: a section on `--surface-raised`,
+an inset panel a step down, a recessed field. It costs 0 KB, it survives dark mode and
+`forced-colors` intact, and it is what stops the "cards with a 24 px blur on white" default.
+
+Two colors and a ground, held exactly, beats six colors used approximately. If the page needs
+more, it usually needs less content per screen instead.
+
+### When you genuinely need many hues
+
+Categories, series, states, provenance — a set where each hue *means* something. Do not pick
+them one at a time; that is where a considered palette turns into a bag of colors. OKLCH makes
+the rule arithmetic:
+
+- **Same lightness across the set** → equal visual weight, so no category shouts.
+- **Same chroma across the set** → unified saturation, so no category looks like the accent.
+- **Even hue intervals** → `360 / n`, rotated so the set does not collide with the accent.
+
+`node ${CLAUDE_PLUGIN_ROOT}/scripts/palette.mjs <spec.json> --categorical <n>` emits the set
+and measures each member against both grounds. Then, because hue alone is not a carrier of
+meaning: pair every category with a shape, an icon or a label, and check the set holds when
+two members land side by side. Six is about the ceiling for a categorical set people can
+actually read; beyond that, group and drill down.
+
+Semantic states are the same procedure with fixed hues instead of even ones — success,
+warning, danger sit where convention puts them — but they still take the set's lightness and
+chroma, which is what stops the danger red from reading as a brand color.
+
+### The floor is WCAG; the ceiling is APCA
+
+WCAG 2 contrast is a luminance ratio, and it is the compliance requirement — 4.5:1 body,
+3:1 large and boundaries, non-negotiable, and what `contrast.mjs` measures. It is also known
+to be a poor predictor of *readability*: it ignores font size and weight, and it is unreliable
+at the dark end, which is why a dark theme can pass AA everywhere and still read badly. WCAG 3
+has not adopted a replacement; APCA is a candidate, not a standard.
+
+So run both layers, and never confuse them:
+
+- **Floor — WCAG 2 AA.** Ship-blocking. A pair that fails is not shippable, whatever APCA says.
+- **Ceiling — APCA `Lc`.** Advisory, and most useful exactly where WCAG is weakest: muted text
+  in dark mode, thin weights, small labels, and text over a tinted ground. As rough targets:
+  `Lc 90` for small body text, `Lc 75` for larger body, `Lc 60` for large or bold headlines,
+  `Lc 45` for non-text boundaries that carry meaning, and below `Lc 30` treat it as invisible.
+  `palette.mjs` prints `Lc` beside every ratio.
+
+The practical rule: if a pair clears AA but its `Lc` is well under the target for its role,
+the color is legal and hard to read. Fix it — usually by moving lightness, not by adding
+weight.
+
 ## Space and layout
+
+### Before the grid: the path and the density map
+
+A grid is a set of measurements, and measurements do not decide what the page *does* to a
+person's eye. Two lines, written before the grid block, and both are about the content rather
+than the container:
+
+```
+PATH     <where the eye lands, then goes, then goes — three or four stops, no more>
+DENSITY  <which sections are dense · which are near-empty · where the page holds its breath>
+```
+
+- **PATH is not the DOM order.** It is what the composition makes unavoidable: the display
+  moment, then the thing that proves it, then the action. If every section has equal weight,
+  there is no path and the reader supplies their own, which is scrolling.
+- **DENSITY is where the variance rule lands.** At least one dense section and at least one
+  empty one — see `originality.md`. A page with uniform density has a stylesheet, not a
+  hierarchy, and uniform density is the most reliable tell of a generated page in 2026.
+
+These two lines are what turn `COLUMNS 9/3` from a nice ratio into a composition; without
+them the same grid holds the same generic content in a more elegant frame.
+
+### The grid block
+
+Type and color get derived in numbers; layout was getting derived in adjectives, which is why
+layout is reliably the most generic axis in the output. Write these four lines into the
+contract before any CSS, and build to them:
+
+```
+COLUMNS  <count and ratio, and whether it holds or alternates>
+MEASURE  <max-inline-size in ch, per content role>
+RHYTHM   <baseline unit in px, and section padding as multiples of it>
+BLEED    <exactly which elements break the measure, and above which width>
+```
+
+Rules that make the block worth writing:
+
+- **The ratio is a decision, not a default.** `7/5`, `8/4`, `9/3` — and it holds down the page
+  rather than alternating sides, unless the content genuinely alternates. Two equal columns is
+  the answer only when both sides carry equal weight.
+- **The rhythm unit comes from the type scale** — the body line height, or a clean multiple of
+  it — so section padding is `4×` and `8×` that unit rather than round numbers picked per
+  section. This is what "density and rhythm" scores on the rubric.
+- **BLEED names elements, not a vibe.** If everything bleeds, the page is just wide; the
+  contrast between a held measure and one full-width element is where the effect lives.
+- **A grid with no numbers in it is a mood.** `check-contract.mjs` fails the contract for it.
+
+**What stays uniform.** The variance is spent on density, scale and the one motion moment —
+nothing else. Radius, stroke weight, icon grid, control height, focus ring and the spacing
+scale itself stay ruthlessly consistent. Varying those is not art direction; it is an
+unfinished component library, and it reads as one.
+
+**Native masonry** (`display: grid-lanes`) is shipping unevenly as of 2026 — Safari first,
+elsewhere behind flags. Treat it as progressive enhancement over a column layout that already
+works, never as the device a composition depends on.
 
 - One spacing scale, geometric-ish: 4 8 12 16 24 32 48 64 96 128. Every gap comes from it.
 - Space belongs to the container (`gap`, flow spacing), not to the child's margin. Owl
@@ -150,6 +349,50 @@ shorter than entrances, movement between two on-screen states uses a standard cu
   is the first thing cut at step 4.
 - One orchestrated moment beats scattered micro-interactions. Scattered micro-interactions
   are themselves an AI tell.
+
+### Choreography, not a reveal on everything
+
+The same entrance animation applied to every element, staggered by index, is banned default
+#15. It is what motion looks like when it is a rule instead of a decision, and it is the most
+common motion failure in generated pages by a wide margin.
+
+What replaces it is a **sequence with a subject**: name the one thing the page's motion is
+*about* — the claim landing, the mechanism assembling, a value arriving — and choreograph two
+to four elements around it over 600–1000 ms. Everything else on the page is already in place
+at first paint. Write it down before building:
+
+```
+MOMENT   <what the motion is about, in one sentence>
+ORDER    <element> <n>ms → <element> <n>ms → <element> <n>ms
+DRIVER   load | scroll | interaction | data
+REST     <what is static: everything not listed above>
+```
+
+`REST` is the load-bearing line. If it is short, this is a reveal on everything wearing a
+plan.
+
+### The 2026 toolkit
+
+Most page-level motion no longer needs a library, and dropping one is 30–70 KB and measurable
+LCP:
+
+- **`animation-timeline: view()`** — enter/exit tied to an element's own visibility. This is
+  the correct tool for a genuine reveal, and it degrades to "already visible" where absent.
+- **`animation-timeline: scroll()`** — progress bars, reading indicators, parallax that is
+  actually tied to the scroller. Runs off the main thread.
+- **Named timelines** (`view-timeline-name` / `timeline-scope`) — one element's position
+  drives a *different* element: a section marking itself active in an index, a spine filling
+  as the page advances. This is the cross-element choreography that used to require an
+  intersection-observer chain, and it is where the device in `devices.md` — the anchored
+  spine — becomes cheap.
+- **`animation-composition: add`** — stack a scroll-driven translate and a scroll-driven
+  rotate without one overwriting the other.
+- **View Transitions API** — route and element transitions, including cross-document.
+
+Gate all of it behind `@supports (animation-timeline: scroll())` and design the no-support
+state as the finished state, never as the hidden one. Support is broad but not universal, and
+an element that starts at `opacity: 0` waiting for a timeline that never runs is an invisible
+page.
 - Reduced motion is a floor, not a toggle: keep opacity and color transitions, remove
   movement, parallax, autoplay, and long sequences.
 

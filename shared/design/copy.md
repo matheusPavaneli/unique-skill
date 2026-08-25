@@ -4,6 +4,12 @@ Words exist in an interface for one reason: to make it easier to understand, and
 easier to use. Generic copy makes a design feel templated no matter how good the type is.
 Bring the same intentionality here as to spacing and color.
 
+**Write the words before the layout.** Not as a step in the build — as an input to it. The
+real headline, the real labels, the real empty state and the real error strings exist before
+the grid is set, because "design to the copy, do not cut the copy to fit" is only possible in
+that order. A layout built around placeholder-shaped text gets placeholder-shaped proportions,
+and no amount of later editing recovers them.
+
 ## Before writing
 
 Ask what this screen needs to say, and how it can best be said to help the person navigate.

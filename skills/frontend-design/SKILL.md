@@ -59,9 +59,26 @@ A brief that pins an axis wins outright. Spend freedom only where the brief left
 
 In thinking, held against the contract:
 
+0. **Facts, then directions.** At `signature` or `benchmark`: draw facts from the wells in
+   `design/originality.md` — looking the subject up rather than recalling it — then generate
+   **three whole directions from three different facts** and kill two on the brief's terms.
+   Before this, there is nothing to derive tokens from; after it, everything below is
+   derivation rather than invention. Skipping it is the single most reliable way to produce
+   the default, and refining one candidate does not substitute for it.
+
+   Then write the real copy for the surface — the actual headline, labels, empty states and
+   error strings, in the subject's vernacular. `design/copy.md`. Layout is set to the copy,
+   never the copy cut to fit a `clamp()`, and that only works if the words exist first.
+
 1. **Tokens** — 4–6 named colors, 2–3 type roles, spacing scale, radius, elevation, motion
-   durations. `design/craft.md`.
-2. **Layout** — one-sentence concept plus an ASCII wireframe. Compare at least two.
+   durations. `design/craft.md`. Colors come out of
+   `${CLAUDE_PLUGIN_ROOT}/scripts/palette.mjs` from the COLOR provenance fact, not out of
+   the head; the type role comes from the five-step face derivation in the same file, not
+   from a pairing reflex.
+2. **Layout** — one-sentence concept, an ASCII wireframe, and the four-line grid block
+   (`COLUMNS` / `MEASURE` / `RHYTHM` / `BLEED`) in numbers. Compare at least two concepts.
+   A layout described only in adjectives is the axis that comes back generic every time.
+   `design/craft.md`, the grid block.
 3. **Signature** — where the budget is spent, and what stays quiet around it. If it
    involves depth, an effect, particles or ambient motion, run `design/spectacle.md`:
    derive the idiom from the subject's mechanism, generate three candidates at three
@@ -88,10 +105,19 @@ loop; this skill owns the contract and the visual craft.
 
 ## Step 4 — Render, score, then subtract
 
-**Look at it before judging it.** Serve the surface, screenshot 390 / 768 / 1440, and score
-the five-axis rubric in `quality/floor.md` against the images. Fix the lowest axis, re-render,
-re-score. Two passes maximum. No browser tool in the environment → report `not rendered` and
-`not scored` as findings; never score from source and never call the design verified.
+**Look at it before judging it.** Blocking, not optional:
+
+```bash
+node ${CLAUDE_PLUGIN_ROOT}/scripts/render.mjs <url> .unique/render
+```
+
+It resolves the browser itself — the project's Playwright, or one fetched through `npx` —
+and captures 390 / 768 / 1440 full-page plus 320 px and 200 % zoom. Score the five-axis
+rubric in `quality/floor.md` against the images, write the five numbers into the contract,
+fix the lowest axis, re-render, re-score. Two passes maximum.
+
+If it genuinely cannot run, report `not rendered — <the reason the script printed>` and
+`not scored`, and say the surface is delivered unverified. Never score from source.
 
 This is the step that separates this skill from a prompt. Everything above it is a plan; a
 plan judged only as text converges on the defaults `design/originality.md` bans.
@@ -99,10 +125,20 @@ plan judged only as text converges on the defaults `design/originality.md` bans.
 Then run the rest of the checklist in `quality/floor.md`, and Chanel's rule: remove one
 accessory and name what was removed.
 
-## Step 5 — Record
+## Step 5 — Record, and check the record
 
 Write `.unique/contract.md` and append the direction to `.unique/log.md`, so the next
 surface diverges instead of repeating. Format in `${CLAUDE_PLUGIN_ROOT}/shared/artifacts.md`.
+
+```bash
+node ${CLAUDE_PLUGIN_ROOT}/scripts/check-contract.mjs .unique
+```
+
+Fails on a missing contract line, a grid block without numbers, a provenance "fact" that is
+a mood, fewer than two rejected directions, a missing or straight-3 rubric, and a `log.md`
+entry repeating an earlier `(palette, display face, layout device)` triple. The gates in
+`design/originality.md` were prose, and prose gates leave no trace — a run that skipped them
+reads exactly like one that did not. Fix what it reports before calling the surface done.
 
 ## Non-negotiables
 

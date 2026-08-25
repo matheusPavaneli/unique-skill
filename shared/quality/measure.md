@@ -17,20 +17,22 @@ run against the *user's* project, in the user's environment, at audit time.
 Required by `floor.md` before the rubric can be scored.
 
 ```bash
-# preferred: the project's own runner, if it has Playwright or Puppeteer
-npx playwright screenshot --viewport-size=390,844  --full-page http://localhost:3000 shot-390.png
-npx playwright screenshot --viewport-size=768,1024 --full-page http://localhost:3000 shot-768.png
-npx playwright screenshot --viewport-size=1440,900 --full-page http://localhost:3000 shot-1440.png
+node ${CLAUDE_PLUGIN_ROOT}/scripts/render.mjs http://localhost:3000 .unique/render
 ```
 
-First run needs `npx playwright install chromium`. A browser MCP server (Chrome DevTools MCP
-or similar) is equivalent and preferable when present, because it can also drive state.
+One command, and it removes the reason this step was being skipped. It waits for the server
+before shooting, prefers the project's own Playwright if it has one, otherwise fetches it
+through `npx`, and captures five full-page shots: 390 / 768 / 1440 for the rubric, plus
+320 px and 1440-at-200 %-zoom for reflow. First run may need `npx playwright install chromium`.
 
-Zoom and reflow are checked in a real browser, not by screenshot: 200 % zoom at 1280 px
-wide, and 320 px width.
+A browser MCP server (Chrome DevTools MCP or similar) is equivalent and preferable when
+present, because it can also drive state — use it for the state matrix and this for the
+rubric shots.
 
-**Not available:** report `not rendered — no browser tool in this environment` and score the
-rubric `not scored`. Never score from source.
+**Not available:** report `not rendered — <the reason the script printed>` and score the
+rubric `not scored`. "No browser tool in this environment" is not a reason on its own any
+more; name what actually failed — nothing served at the URL, the install refused, the build
+never started. Never score from source.
 
 ---
 
