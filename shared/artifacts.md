@@ -128,12 +128,16 @@ SIGNATURE  <element>   <- <fact>
 BORROWED   <craft invariant> from <reference>
 INVENTED   <axis>, from <provenance fact>
 
-## Rubric            (the five numbers from the render pass, scored against the screenshots)
+## Rubric            (the seven numbers from the render pass, scored against the screenshots)
+profile: expressive | functional          (from MODE — quality/floor.md, "The rubric")
 composition: <1-5>
 type: <1-5>
 color: <1-5>
 density: <1-5>
+usability: <1-5>
 signature: <1-5>
+content: <1-5>
+total: <0.0-10.0>                          (target 8.0; floor.md says how to mark one under it)
 
 ## Rejected
 - <direction> — <why>
@@ -150,6 +154,12 @@ records which existing grammar was inherited, and `prototype` is precisely where
 unrecorded default enters a codebase and never leaves. A key with no value fails, and so does
 a block with no numbers in it — `CONTROL`, `CORNER` and `FOCUS` are px and ratios, the same
 way the grid block is. `design/components.md`.
+
+`## Rubric` carries a `total:` as well as the seven axis scores, and the checker recomputes
+it from the scores under the profile MODE implies: a total that does not follow from its own
+numbers fails, and so does a profile that contradicts MODE. The total is the line the next
+pass is compared against, so a contract that records seven numbers and no total records
+nothing comparable. `quality/floor.md`, "The rubric".
 
 ## `log.md`
 

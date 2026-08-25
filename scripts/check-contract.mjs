@@ -17,7 +17,89 @@ import { pathToFileURL } from 'node:url';
 export const MODES = ['product-surface', 'marketing', 'editorial', 'native', 'prototype'];
 export const BUDGETS = ['quiet', 'measured', 'loud'];
 export const AXES = ['COLOR', 'TYPE', 'LAYOUT', 'SIGNATURE'];
-export const RUBRIC_AXES = ['composition', 'type', 'color', 'density', 'signature'];
+export const RUBRIC_AXES = [
+  'composition',
+  'type',
+  'color',
+  'density',
+  'usability',
+  'signature',
+  'content',
+];
+
+/**
+ * Two weight profiles, per `shared/quality/floor.md`. `expressive` is the published Awwwards
+ * jury split (design 40 / usability 30 / creativity 20 / content 10). `functional` is not a
+ * jury's split, because no jury looks at a settings screen: usability carries it, signature
+ * is worth little because a loud product surface is a defect, and content rises because the
+ * labels and empty states are the product. The design group's weight is split evenly across
+ * its four axes.
+ *
+ * Weights are per-mille integers, not fractions. 0.075 and 0.45 are not binary-representable,
+ * and accumulating them float-first makes an exact `.x5` total land at `82.49999999999999`
+ * and round *down* — so a contract whose author rounded 8.25 up to 8.3, exactly as floor.md
+ * says to, would be failed by the checker for not following from its own scores.
+ */
+export const RUBRIC_PROFILES = {
+  expressive: { composition: 100, type: 100, color: 100, density: 100, usability: 300, signature: 200, content: 100 },
+  functional: { composition: 75, type: 75, color: 75, density: 75, usability: 450, signature: 100, content: 150 },
+};
+
+/** MODE selects the profile. A contract may record it, but it may not contradict this. */
+export const PROFILE_FOR_MODE = {
+  marketing: 'expressive',
+  editorial: 'expressive',
+  'product-surface': 'functional',
+  native: 'functional',
+  prototype: 'functional',
+};
+
+export const RUBRIC_TARGET = 8;
+
+/**
+ * A `quiet` budget deliberately declines to spend on a signature, and floor.md tells the
+ * scorer to expect a 2 there. Leaving Signature's weight in place would then hold every
+ * honestly-scored quiet surface permanently below target for doing exactly what its budget
+ * asked. So at `quiet` the axis stops being paid for: half its weight goes to Usability, half
+ * is spread across the design group — where a quiet surface is supposed to be winning.
+ */
+export function rubricWeights(profile, budget) {
+  const base = RUBRIC_PROFILES[profile];
+  if (!base) return null;
+  if (budget !== 'quiet') return base;
+
+  const released = base.signature;
+  const toUsability = released / 2;
+  const perDesignAxis = released / 2 / 4;
+  return {
+    composition: base.composition + perDesignAxis,
+    type: base.type + perDesignAxis,
+    color: base.color + perDesignAxis,
+    density: base.density + perDesignAxis,
+    usability: base.usability + toUsability,
+    signature: 0,
+    content: base.content,
+  };
+}
+
+/**
+ * Weighted mean of the 1-5 scores under the profile, doubled into 0-10, to one decimal.
+ * Returns null when an axis is missing — a partial rubric has no total, and saying so is
+ * more useful than averaging what happens to be there.
+ */
+export function rubricTotal(scores, profile, budget) {
+  const weights = rubricWeights(profile, budget);
+  if (!weights) return null;
+  let perMille = 0;
+  for (const axis of RUBRIC_AXES) {
+    const score = scores.get(axis);
+    if (score === undefined) return null;
+    perMille += score * weights[axis];
+  }
+  // perMille is the weighted mean × 1000. Doubling into 0-10 and rounding to one decimal is
+  // therefore an exact division by 50, with no float accumulated on the way in.
+  return Math.round(perMille / 50) / 10;
+}
 export const COMPONENT_KEYS = ['RECOGNIZED', 'INTERACTION', 'CONTROL', 'CORNER', 'SEPARATION', 'FOCUS'];
 
 /**
@@ -88,8 +170,31 @@ export function parseProvenance(lines) {
 export function parseRubric(lines) {
   const scores = new Map();
   let notScored = false;
+  let profile = null;
+  let total = null;
+  let belowTarget = false;
   for (const line of lines) {
     if (/not scored/i.test(line)) notScored = true;
+
+    const profileMatch = /^\s*\|?\s*profile\s*\|?\s*[:|]\s*([A-Za-z]+)/i.exec(line);
+    if (profileMatch) {
+      profile = profileMatch[1].toLowerCase();
+      continue;
+    }
+
+    // Read the total before the axis regex, which would otherwise reject it for being
+    // outside 1-5 and leave a recorded total silently unseen.
+    const totalMatch = /^\s*\|?\s*total\s*\|?\s*[:|]\s*(\d+(?:\.\d+)?)(.*)$/i.exec(line);
+    if (totalMatch) {
+      total = Number(totalMatch[1]);
+      // The marker has to be what directly follows the number, not merely present somewhere.
+      // Matched loosely it also matches the template's own annotation ("append " BELOW
+      // TARGET" when under"), so a contract that filled in a failing score while leaving the
+      // annotation in place would silence the only warning it had earned.
+      belowTarget = /^\s*[-—·]?\s*below\s+target\b/i.test(totalMatch[2]);
+      continue;
+    }
+
     const match = /^\s*\|?\s*([A-Za-z][A-Za-z\s]*?)\s*\|?\s*[:|]\s*([1-5])\s*(?:\/\s*5)?\s*\|?\s*$/.exec(
       line,
     );
@@ -98,7 +203,7 @@ export function parseRubric(lines) {
       if (axis) scores.set(axis, Number(match[2]));
     }
   }
-  return { scores, notScored };
+  return { scores, notScored, profile, total, belowTarget };
 }
 
 const normalize = (value) => (value ?? '').toLowerCase().replace(/\s+/g, ' ').trim();
@@ -243,13 +348,48 @@ export function checkContract(text) {
 
   const rubric = parseRubric(sections.get('rubric') ?? []);
   if (!sections.has('rubric')) {
-    fail('contract.md: missing "## Rubric" section — the render pass writes five numbers here');
+    fail('contract.md: missing "## Rubric" section — the render pass writes seven numbers and a total here');
   } else if (rubric.notScored && rubric.scores.size === 0) {
     warn('contract.md: rubric is "not scored" — the surface is delivered unverified and must be reported as such');
   } else {
     for (const axis of RUBRIC_AXES) {
-      if (!rubric.scores.has(axis)) fail(`contract.md: rubric has no score for ${axis}`);
+      if (!rubric.scores.has(axis)) {
+        fail(
+          `contract.md: rubric has no score for ${axis} — add it, plus "profile:" and "total:"; ` +
+            'a five-axis rubric predates the weighted one (quality/floor.md, "The rubric")',
+        );
+      }
     }
+
+    // The profile is implied by MODE. A contract may record it — and must, per artifacts.md
+    // — but recording a different one would make the total unreproducible.
+    const impliedProfile = PROFILE_FOR_MODE[mode];
+    if (rubric.profile && !RUBRIC_PROFILES[rubric.profile]) {
+      fail(`contract.md: rubric profile "${rubric.profile}" is not expressive | functional`);
+    } else if (rubric.profile && impliedProfile && rubric.profile !== impliedProfile) {
+      fail(
+        `contract.md: rubric profile "${rubric.profile}" contradicts MODE ${mode}, which is ${impliedProfile}`,
+      );
+    }
+
+    // MODE is the authority: recomputing under a recorded profile that contradicts MODE would
+    // validate the inflated total as correct and leave only the contradiction reported.
+    const profile = impliedProfile ?? (RUBRIC_PROFILES[rubric.profile] ? rubric.profile : null);
+    const computed = rubricTotal(rubric.scores, profile, budget);
+    if (rubric.total === null) {
+      fail('contract.md: rubric has no "total:" — seven numbers with no total records nothing the next pass can be compared against');
+    } else if (computed !== null && Math.abs(rubric.total - computed) > 0.05) {
+      fail(
+        `contract.md: rubric total ${rubric.total} does not follow from its own scores — ` +
+          `the ${profile} profile gives ${computed}`,
+      );
+    } else if (rubric.total < RUBRIC_TARGET && !rubric.belowTarget) {
+      warn(
+        `contract.md: rubric total ${rubric.total} is below the ${RUBRIC_TARGET.toFixed(1)} target — ` +
+          'mark the line BELOW TARGET, name the axis with the largest weighted shortfall, and report both',
+      );
+    }
+
     const values = [...rubric.scores.values()];
     if (values.length === RUBRIC_AXES.length && values.every((v) => v === 3)) {
       fail('contract.md: 3 across the board is the template result — floor.md calls that a fail, not a pass');

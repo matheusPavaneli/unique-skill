@@ -89,8 +89,8 @@ one.
 
 11. **Contract holds.** `node ${CLAUDE_PLUGIN_ROOT}/scripts/check-contract.mjs .unique` — the
     five contract lines, the grid block in numbers, the components block in every MODE with a
-    value on every key, a provenance fact per axis, two rejected directions, the five rubric
-    scores, and no repeated triple in `log.md`. It checks that
+    value on every key, a provenance fact per axis, two rejected directions, the seven rubric
+    scores with their profile and total, and no repeated triple in `log.md`. It checks that
     the decisions were made and recorded, not that they were good ones; a clean run is the
     floor, not the ceiling.
 
@@ -107,10 +107,12 @@ reader expects code to produce, which is the same distribution the banned defaul
 
 1. **Serve it.** The real dev server or a static build. Not a fragment in isolation.
 2. **Screenshot 390 / 768 / 1440.** Full page, not the viewport crop.
-3. **Score the rubric below against the images**, not against the code. Write the five
-   numbers down; an unwritten score is a vibe.
-4. **Fix the lowest axis only.** One axis per pass. Fixing three at once makes it
-   impossible to tell which change helped.
+3. **Score the rubric below against the images**, not against the code. Write the seven
+   numbers and the total down; an unwritten score is a vibe.
+4. **Fix the axis with the largest weighted shortfall.** One axis per pass — and weighted,
+   not raw: on the `functional` profile a 3 on usability costs 0.45 of the mean and a 3 on
+   type costs 0.075, so the lowest raw number is often not the one worth a pass. Fixing
+   three at once makes it impossible to tell which change helped.
 5. **Re-render and re-score.** Two passes maximum, then stop and report the remaining
    score. A third pass is thrash, not craft.
 
@@ -129,10 +131,10 @@ Other acceptable tools, if the project already has one: its own Playwright or Pu
 script, or a browser MCP server. A tool that produces a viewport crop instead of a full page
 is not acceptable — the part of a page that goes generic is below the fold.
 
-**This step is blocking.** A surface with no five numbers written down is not done, and the
+**This step is blocking.** A surface with no seven numbers written down is not done, and the
 rubric is never scored from source. There are exactly two legitimate outcomes:
 
-- Five numbers, scored against the images.
+- Seven numbers and a total, scored against the images and the evidence named below.
 - `not rendered — <the specific reason the script failed>`, quoted from its output, plus the
   rubric line `not scored`, plus the words "delivered unverified" in the report.
 
@@ -143,7 +145,18 @@ close, because it is also the cheapest path and it was becoming the default one.
 
 ## The rubric
 
-Five axes, 1–5, scored against the screenshot.
+Seven axes, 1–5, weighted into one 0–10 total.
+
+The rubric used to be five axes, all of them visual, all of them weighed the same — which
+made the plugin's self-assessment a design score and nothing else. A page can be beautifully
+composed and hard to use, and the version of this rubric that could not say so was scoring
+the easy half. The axes below split the way a jury actually splits: **design, usability,
+creativity, content**, with usability and content carrying real weight rather than sitting
+in a pass/fail checklist above the score.
+
+### The axes
+
+**The design group** — four axes, scored against the screenshots.
 
 | Axis | 1 | 5 |
 | --- | --- | --- |
@@ -151,19 +164,113 @@ Five axes, 1–5, scored against the screenshot.
 | **Type** | One size for headings, one for body, default tracking, ragged measure | A scale that is visible as a scale; display set with optical care; measure held; the face carries the subject |
 | **Color** | Grey on white with an accent applied to everything actionable and decorative alike | A dominant ground, one accent that means "act", supports that stay support; contrast is structural, not incidental |
 | **Density and rhythm** | Uniform padding everywhere; nothing groups; the page is a list | Space groups related things and separates unrelated ones; the section rhythm comes from the type scale |
+
+**The three that carry the rest.**
+
+| Axis | 1 | 5 |
+| --- | --- | --- |
+| **Usability** | The next action is not obvious; targets are small; 320 px or 200 % zoom loses content; states are the happy path and a spinner | The next action is obvious without reading; targets and focus survive 320 px and 200 % zoom; every async thing has a real loading, empty and error state; nothing needs a second look to operate |
 | **Signature** | Nothing here would be missed if it were another company's page | One element a person could describe from memory, and it traces to a provenance fact |
+| **Content** | Placeholder headline, `Submit` / `Learn more`, an empty state that says "No data", errors that say "Something went wrong" | Real copy in the subject's vernacular; the headline makes the argument; empty states say what to do next; errors say what happened and what to do |
 
-Read the axis descriptions as the failure and the target, not as a grading curve. Scoring a
-3 across the board is the template result — it is the most common outcome and it is a fail,
-not a pass. `check-contract.mjs` treats it as one.
+### What the two new axes are scored against
 
-Write the five numbers into `.unique/contract.md` under `## Rubric`, one axis per line. A
-score that lives only in the response cannot be compared against the next pass, which is the
-only thing that tells you whether the work is improving.
+Neither is scored from source, and neither is scored from intent — the same rule the four
+visual axes already hold.
 
-**MODE changes what a good score means, and never lowers the floor.** On `product-surface`
+- **Usability** is scored against the render set — 390 / 768 / 1440 plus the 320 px and
+  200 % zoom captures — together with the state matrix and the verification checklist
+  already completed above in this file. Both exist before the render pass runs, so this is
+  scoring evidence already gathered, not a new investigation.
+- **Content** is scored against the real copy as it appears in the render: the headline,
+  the labels, the empty states and the error strings. `../design/copy.md` is the standard.
+  Copy that only exists in the plan and not on the page scores what is on the page.
+
+### The two weight profiles
+
+MODE selects the profile. Record the profile name in the contract, so the total is
+reproducible by anyone reading it.
+
+| Profile | MODE | Design group | Usability | Signature | Content |
+| --- | --- | --- | --- | --- | --- |
+| **expressive** | `marketing`, `editorial` | 40 % | 30 % | 20 % | 10 % |
+| **functional** | `product-surface`, `native`, `prototype` | 30 % | 45 % | 10 % | 15 % |
+
+`expressive` is the published Awwwards jury split — design 40, usability 30, creativity 20,
+content 10 — and it is the right split for a page whose job is to be looked at and
+remembered.
+
+`functional` is not a jury's split, because no jury looks at a settings screen. It says what
+this plugin already said in prose: on a product surface a high Signature score is a defect,
+not a win, so Signature is worth 10 % there; the screen is operated rather than admired, so
+Usability takes 45 %; and the labels and empty states *are* the product, so Content rises to
+15 %.
+
+The design group's weight is split evenly across its four axes — 10 % each on `expressive`,
+7.5 % each on `functional`.
+
+**BUDGET `quiet` releases the Signature weight.** A quiet budget declines to spend on a
+signature on purpose, and this file already tells the scorer to expect a 2 there. Leaving
+Signature weighted would then hold every honestly-scored quiet surface permanently below
+target for doing exactly what its budget asked. So at `quiet` the axis stops being paid for:
+Signature goes to 0, half its weight moves to Usability and half is spread across the design
+group — where a quiet surface is supposed to be winning. On `expressive` that reads 12.5 %
+per design axis, usability 40 %, content 10 %. Still score the axis and still write the
+number down; it just no longer costs a surface the target.
+
+### The total
+
+```
+total = (Σ score × weight) × 2      rounded to one decimal, 0–10
+```
+
+A total landing exactly on a half — 8.25, 8.35 — rounds **up**. `check-contract.mjs`
+accumulates the weights as integers so it rounds the same way a person reading this line
+does, and it accepts anything within 0.05 of its own result.
+
+Target is **8.0**. Worked both ways, same seven scores where they overlap:
+
+```
+expressive   composition 5 · type 4 · color 4 · density 4 · usability 4 · signature 5 · content 4
+             (5+4+4+4)×0.10 + 4×0.30 + 5×0.20 + 4×0.10  =  4.3   ->  8.6
+
+functional   composition 4 · type 3 · color 4 · density 5 · usability 5 · signature 2 · content 4
+             (4+3+4+5)×0.075 + 5×0.45 + 2×0.10 + 4×0.15  =  4.25  ->  8.5
+```
+
+**The weights change what a good score means and never lower the floor.** Everything above
+this section — WCAG 2.2 AA, the state matrix, 320 px, 200 % zoom, the non-negotiables — stays
+pass/fail and stays *above* the rubric. A 5 on Usability does not buy a failed contrast
+check, and an 8.6 total on a surface that fails the floor is an 8.6 that does not ship.
+
+Scoring 3 across the board is still the template result — the most common outcome and a
+fail, not a pass. `check-contract.mjs` treats it as one.
+
+### When two passes are not enough
+
+The loop stops at two passes. If the total is still below 8.0 after the second:
+
+1. Write the real number. Do not round it up to the target and do not re-score more kindly.
+2. Mark the contract's total line `BELOW TARGET`, directly after the number —
+   `total: 7.4 BELOW TARGET`. The checker reads the marker there and nowhere else, so that
+   it cannot be satisfied by a leftover template annotation.
+3. Name the axis with the largest **weighted** shortfall — `(5 − score) × weight` — because
+   that is the one a third pass would have been spent on.
+4. Ship, and say all three of those things in the report.
+
+A third pass is thrash. An honest 7.4 with the weakest axis named is worth more than an 8.0
+produced by scoring the same page twice with a softer eye.
+
+### Recording it
+
+Write the seven numbers, the profile and the total into `.unique/contract.md` under
+`## Rubric`, one axis per line. A score that lives only in the response cannot be compared
+against the next pass, which is the only thing that tells you whether the work is improving.
+
+**MODE still changes how an axis is read, not only how it is weighed.** On `product-surface`
 and `native`, Signature scoring high is a *defect* — record it as such rather than
 congratulating it, and read the axis as "one element of the small stuff done unusually well"
 instead. On `quiet` budget, expect 2 on Signature and demand 4+ on Density and rhythm.
 
-Report the five numbers in the response. Three numbers and an adjective is not a score.
+Report the seven numbers and the total in the response. Three numbers and an adjective is
+not a score.

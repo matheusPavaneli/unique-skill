@@ -35,6 +35,24 @@ Reaching for one because it looks good is the failure.
 16. Smooth, symmetrical, plastic illustration — the AI-image look — used as the page's
     imagery. Also: an illustration style chosen because the subject was hard to photograph.
 
+17. Mono-hue maximalism: one hue pushed to the extreme across ground, type, controls and
+    imagery, with the hue itself doing the work no structure is doing. The 2026 version of
+    "our brand color, everywhere".
+18. An oversized plain sans headline on flat color, set at its defaults — no optical
+    tracking, no considered break, the size *being* the idea. Scale is cheap; scale set with
+    care is not, and the difference is visible at a glance.
+19. Saturated neon or "dopamine" gradient — a hot two- or three-stop ramp used as a ground,
+    a fill and a text treatment on the same page.
+20. Glitch, glow and heavy texture applied as decoration: a displacement pass, a bloom or a
+    grain layer that represents nothing and would be missed by nobody. `spectacle.md` Gate A.
+21. Neo-brutalism worn as a style — hard shadows, unmodulated primaries, visible borders,
+    system type — on a subject with no utilitarian claim on it. The idiom is a real one; it
+    belongs to interfaces that are actually instruments.
+
+Entries 17–21 came out of the 2026 trend roundups, read the only way the next section allows
+one to be read: as a description of the mean, useful for Gate 3 and useless as a source. They
+are on this list because they are common, not because they are bad.
+
 **Structural defaults, equally banned unaudited:** hero → logo strip → three feature cards
 with icons → alternating image/text → testimonial → pricing table → dark CTA band → fat
 footer. That order is fine when the content demands it; it is a template when the content
@@ -64,6 +82,10 @@ way.
 | A product screenshot as the hero (#8) | The skewed floating screenshot with a soft glow beneath it | The product shown flat, at real scale, doing the real job — the strongest idiom in `spectacle.md` |
 | A continuously scrolling strip (#9) | The greyscale logo marquee | A strip whose contents are the subject's own material and whose motion is opt-out |
 | Staggered reveal (#15) | Fade-and-rise on every element, delayed by index | One authored timeline with named stops — the named timeline in `devices.md` |
+| A single dominant hue (#17) | One saturated hue on ground, type, controls and imagery alike, carrying the hierarchy no structure is carrying | A ground the subject's material actually has, a ramp derived through `palette.mjs`, and one accent that still means "act" |
+| Type as the whole composition (#18) | An oversized plain sans at its defaults on flat color | A display step the scale earns, set with the optical care in `craft.md` — tracking, break, and a measure the body holds |
+| Texture and light (#20 "glitch/glow") | Displacement, bloom or grain representing nothing | An effect that reveals a mechanism, responds to the person, or repays attention — `spectacle.md`, with a mapping and a cut line |
+| Utilitarian hardness (#21 "neo-brutalism") | Hard shadows and unmodulated primaries as a style | A subject that is genuinely an instrument, and a control grammar in the components block that says so |
 
 Two conditions, and they are the whole point: an adopted technique is **derived from a fact**
 like every other axis, and it is **dimensioned in numbers** — columns and ratios, the rhythm

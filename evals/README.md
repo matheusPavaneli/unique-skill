@@ -19,7 +19,10 @@ Everything else recorded below is diagnosis. The redesign judgement is the resul
 2. Paste the case's **Brief** verbatim. Nothing else. No clarifications, no nudges, no
    "make it more interesting" — the point is what the plugin produces unassisted.
 3. Let it run to the end, including the render pass.
-4. Score the five axes from `shared/quality/floor.md` against the *screenshots*, not the code.
+4. Score the seven axes from `shared/quality/floor.md` against the *screenshots*, not the
+   code, and record the weighted total under the profile the case's MODE implies. The total
+   is what makes two runs of the same case comparable as numbers; the images are what make
+   them comparable as pages.
 5. Record the gate results listed in the case.
 6. **Keep the artifacts.** A score with no image behind it cannot be re-read later, and a
    verdict months apart is only comparable if the evidence is:
@@ -33,8 +36,8 @@ Everything else recorded below is diagnosis. The redesign judgement is the resul
 
    These are the regression suite. The comparison that matters is not this run against the
    rubric — it is this run's screenshots against the previous run's, for the same brief. Two
-   runs that score 4/4/4/3/4 and look like the same page have not diverged, and the numbers
-   will not tell you that. The images will.
+   runs that score the same 8.4 and look like the same page have not diverged, and the
+   numbers will not tell you that. The images will.
 7. Answer one question: **would I ask for a redo before shipping this?**
 
 To measure a *before* state, run the cases against an older commit:

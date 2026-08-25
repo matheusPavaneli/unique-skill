@@ -79,6 +79,20 @@ to be loud, and the accessibility and performance floor holds in every mode — 
 
 `/unique <idea>` resolves which step to enter from what already exists and runs from there.
 
+### The canonical flow
+
+Each step leaves an artifact, and the artifact *is* the step: one that left no file did not
+run, whatever the transcript says. `brief.md` → `stack.md` → `contract.md` → the code → the
+audit and the scored rubric → the `log.md` entry, with a gate before each step rather than
+after the build.
+
+There is a short path for a change that touches no token, no grid line, no component line,
+no signature and no new capability, on a surface that already has a contract — but it is a
+re-entry into that contract, not an exit from the pipeline: it still holds the
+non-negotiables, still re-runs `check-contract.mjs`, and still says which condition made it
+eligible. "It's a small change" is not one of the conditions. The full flow, its gates and
+the four conditions are in `commands/unique.md`, which is the authority.
+
 ## Commands
 
 | Command | Runs |
@@ -173,13 +187,30 @@ what to report when the tool is not installed.
 Design is not verifiable from source. A surface read as code is judged against what the
 reader expects code to produce — which is the same distribution the banned defaults came
 from. So `frontend-design` and `ship-audit` both stop, serve the surface, screenshot
-390 / 768 / 1440, and score it on five axes against the *images*: composition, type, color,
-density and rhythm, signature. The lowest axis is fixed, the page re-rendered, and the loop
-stops at two passes.
+390 / 768 / 1440, and score it on seven axes against the *images*: composition, type, color,
+density and rhythm, usability, signature, content. The axis with the largest weighted
+shortfall is fixed, the page re-rendered, and the loop stops at two passes.
+
+The seven axes are weighted into one 0–10 total, because a rubric of five visual axes was
+scoring the easy half — a page can be beautifully composed and hard to use, and that rubric
+could not say so. MODE picks the profile:
+
+| Profile | MODE | Design group | Usability | Signature | Content |
+| --- | --- | --- | --- | --- | --- |
+| `expressive` | `marketing`, `editorial` | 40 % | 30 % | 20 % | 10 % |
+| `functional` | `product-surface`, `native`, `prototype` | 30 % | 45 % | 10 % | 15 % |
+
+`expressive` is the published Awwwards jury split. `functional` is not a jury's split,
+because no jury looks at a settings screen: usability carries it, signature is worth little
+because a loud product surface is a defect, and the labels and empty states are the product.
+Target is 8.0. Below it after two passes, the number is written as it is, marked
+`BELOW TARGET` with the weakest weighted axis named — never a third pass and never a kinder
+re-score.
 
 Scoring 3 across the board is the template result. It is the most common outcome and it is a
-fail, not a midpoint. MODE decides what a good score means: on a product surface, scoring
-high on signature is a defect and is recorded as one.
+fail, not a midpoint. The weights change what a good score means and never lower the floor:
+WCAG 2.2 AA, the state matrix, 320 px and 200 % zoom stay pass/fail *above* the rubric, so an
+8.6 on a surface that fails the floor is an 8.6 that does not ship.
 
 The step is blocking, and it ships with its own browser resolution — `scripts/render.mjs`
 waits for the server, prefers the project's Playwright, otherwise fetches one through `npx`,
@@ -220,7 +251,9 @@ whether it ships, the `Lc` tells you whether anyone can read it.
 line, a grid block with no numbers in it, a missing components block, one of its six keys
 left with no value or a components block with no measurements in it, a provenance "fact" that
 is a mood, fewer than two
-rejected directions, a missing rubric, a straight-3 rubric, and any `log.md` entry repeating
+rejected directions, a missing rubric, a rubric missing an axis, a rubric with no total or a
+total that does not follow from its own scores under the profile MODE implies, a straight-3
+rubric, and any `log.md` entry repeating
 an earlier `(palette, display face, layout device)` triple. It checks that the decisions were
 made and recorded — not that they were good ones. That is what the rubric is for.
 

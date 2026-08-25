@@ -119,9 +119,17 @@ node ${CLAUDE_PLUGIN_ROOT}/scripts/render.mjs <url> .unique/render
 ```
 
 It resolves the browser itself — the project's Playwright, or one fetched through `npx` —
-and captures 390 / 768 / 1440 full-page plus 320 px and 200 % zoom. Score the five-axis
-rubric in `quality/floor.md` against the images, write the five numbers into the contract,
-fix the lowest axis, re-render, re-score. Two passes maximum.
+and captures 390 / 768 / 1440 full-page plus 320 px and 200 % zoom. Score the seven-axis
+weighted rubric in `quality/floor.md` against the images, write the seven numbers, the
+profile and the total into the contract, fix the axis with the largest *weighted* shortfall,
+re-render, re-score. Two passes maximum, target 8.0.
+
+MODE picks the weight profile: `marketing` and `editorial` take `expressive` (design 40 /
+usability 30 / signature 20 / content 10, the jury split); `product-surface`, `native` and
+`prototype` take `functional` (30 / 45 / 10 / 15), where usability carries the score and a
+loud signature is a defect rather than a win. If the total is still under 8.0 after the
+second pass, write the real number, mark it `BELOW TARGET`, name the weakest weighted axis,
+and ship — never a third pass, never a kinder re-score.
 
 If it genuinely cannot run, report `not rendered — <the reason the script printed>` and
 `not scored`, and say the surface is delivered unverified. Never score from source.
@@ -143,7 +151,9 @@ node ${CLAUDE_PLUGIN_ROOT}/scripts/check-contract.mjs .unique
 
 Fails on a missing contract line, a grid block without numbers, a missing components block or
 one of its keys left without a value, a provenance "fact" that is a mood, fewer than two
-rejected directions, a missing or straight-3 rubric, and a `log.md` entry repeating an earlier
+rejected directions, a rubric missing an axis, a rubric with no total or a total that does not
+follow from its own scores, a profile that contradicts MODE, a straight-3 rubric, and a
+`log.md` entry repeating an earlier
 `(palette, display face, layout device)` triple. The gates in
 `design/originality.md` were prose, and prose gates leave no trace — a run that skipped them
 reads exactly like one that did not. Fix what it reports before calling the surface done.

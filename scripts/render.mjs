@@ -16,7 +16,7 @@ import { mkdirSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-/** The three widths the five-axis rubric is scored at. Changing these changes the rubric. */
+/** The three widths the rubric is scored at. Changing these changes the rubric. */
 export const VIEWPORTS = Object.freeze([
   Object.freeze({ label: '390', width: 390, height: 844 }),
   Object.freeze({ label: '768', width: 768, height: 1024 }),

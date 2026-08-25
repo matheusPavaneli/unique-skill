@@ -23,11 +23,20 @@ as "not measured", never estimated as fact.**
 
 3. **Render and score.** `node ${CLAUDE_PLUGIN_ROOT}/scripts/render.mjs <url> .unique/render`
    — it resolves the browser itself and shoots 390 / 768 / 1440 plus 320 px and 200 % zoom.
-   Score the five-axis rubric in `${CLAUDE_PLUGIN_ROOT}/shared/quality/floor.md` against the
-   images and report the five numbers. An audit that never looked at the page audited a
+   Score the seven-axis weighted rubric in `${CLAUDE_PLUGIN_ROOT}/shared/quality/floor.md`
+   against the images and report the seven numbers, the profile MODE implies, and the 0–10
+   total against its 8.0 target. Usability and content are scored here too — usability
+   against the render set together with the state matrix and the checklist below, content
+   against the copy as it appears on the page. An audit that never looked at the page audited a
    build, not a design. If the script genuinely fails → report `not rendered — <its reason>`
    and `not scored` as findings, the same way any other unrunnable check is reported here.
    Never score from source.
+
+   **Write them into `.unique/contract.md` under `## Rubric` before the next command** —
+   seven axes, the profile and the total, per `${CLAUDE_PLUGIN_ROOT}/shared/artifacts.md`.
+   `commands/unique.md` makes the scored rubric the artifact this step leaves behind, and the
+   checker below hard-fails a rubric block still holding its template. A score reported in
+   prose and nowhere else fails the audit's own next line.
 
    Then `node ${CLAUDE_PLUGIN_ROOT}/scripts/check-contract.mjs .unique`: a surface whose
    contract has no grid block, no components block, no provenance fact per axis, or no rubric
@@ -78,8 +87,9 @@ as "not measured", never estimated as fact.**
 
 12. **Report.** Findings ordered by severity, each with `file:line` and a concrete fix.
     Separate **blocking** (accessibility failure, budget breach, broken state, missing
-    fallback) from **should fix** from **noted**. Include the five rubric numbers from step
-    3. State plainly which checks could not run in this environment and why. Then name the
+    fallback) from **should fix** from **noted**. Include the seven rubric numbers and the
+    total from step 3; a total under 8.0 is reported as `BELOW TARGET` with the weakest
+    weighted axis named, never rounded up. State plainly which checks could not run in this environment and why. Then name the
     one thing worth removing.
 
 ## Rules

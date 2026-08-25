@@ -5,6 +5,8 @@ import {
   parseContract,
   parseProvenance,
   parseRubric,
+  rubricTotal,
+  RUBRIC_AXES,
   parseLog,
   checkContract,
   checkLog,
@@ -52,11 +54,15 @@ LAYOUT     anchored spine   <- a firing schedule is a sequence with fixed hold p
 SIGNATURE  cone chart   <- pyrometric cones bend at a known temperature
 
 ## Rubric
-composition: 4
+profile: expressive
+composition: 5
 type: 4
 color: 4
-density: 3
-signature: 4
+density: 4
+usability: 4
+signature: 5
+content: 4
+total: 8.6
 
 ## Rejected
 - dark ground with an acid accent — registry #2, and unfired clay is not dark
@@ -153,7 +159,10 @@ test('the components gate is not scoped by mode — native and prototype fail to
 test('a complete components block passes, at every mode', () => {
   assert.deepEqual(errors(VALID), []);
   for (const mode of ['native', 'prototype']) {
-    const contract = VALID.replace('MODE         marketing', `MODE         ${mode}`);
+    // Those modes take the functional profile, so the rubric is reweighed with them.
+    const contract = VALID.replace('MODE         marketing', `MODE         ${mode}`)
+      .replace('profile: expressive', 'profile: functional')
+      .replace(/^total: 8\.6$/m, 'total: 8.4');
     assert.deepEqual(errors(contract), []);
   }
 });
@@ -249,14 +258,169 @@ test('a missing rubric fails, and "not scored" is a warning that must be reporte
 test('3 across the board is recorded as the template result it is', () => {
   const threes = VALID.replace(
     /## Rubric[\s\S]*?(?=\n## )/,
-    '## Rubric\ncomposition: 3\ntype: 3\ncolor: 3\ndensity: 3\nsignature: 3\n',
+    '## Rubric\nprofile: expressive\ncomposition: 3\ntype: 3\ncolor: 3\ndensity: 3\n' +
+      'usability: 3\nsignature: 3\ncontent: 3\ntotal: 6.0 BELOW TARGET\n',
   );
   assert.ok(errors(threes).some((m) => /3 across the board/.test(m)));
 });
 
-test('a rubric missing an axis fails', () => {
-  const partial = VALID.replace(/^density: 3$/m, '');
+test('a rubric missing an axis fails, and names the migration', () => {
+  const partial = VALID.replace(/^density: 4$/m, '');
   assert.ok(errors(partial).some((m) => /no score for density/.test(m)));
+
+  for (const axis of ['usability', 'content']) {
+    const dropped = VALID.replace(new RegExp(`^${axis}: 4$`, 'm'), '');
+    assert.ok(
+      errors(dropped).some((m) => new RegExp(`no score for ${axis}`).test(m)),
+      `a five-axis rubric must fail on the missing ${axis} axis`,
+    );
+    assert.ok(errors(dropped).some((m) => /five-axis rubric predates/.test(m)));
+  }
+});
+
+test('rubricTotal weighs the same scores differently under each profile', () => {
+  const scores = new Map([
+    ['composition', 5],
+    ['type', 4],
+    ['color', 4],
+    ['density', 4],
+    ['usability', 4],
+    ['signature', 5],
+    ['content', 4],
+  ]);
+  // (5+4+4+4)×0.10 + 4×0.30 + 5×0.20 + 4×0.10 = 4.3
+  assert.equal(rubricTotal(scores, 'expressive'), 8.6);
+  // The same page read as a product surface: signature stops paying, usability carries it.
+  assert.ok(rubricTotal(scores, 'functional') < rubricTotal(scores, 'expressive'));
+
+  const worked = new Map([
+    ['composition', 4],
+    ['type', 3],
+    ['color', 4],
+    ['density', 5],
+    ['usability', 5],
+    ['signature', 2],
+    ['content', 4],
+  ]);
+  // (4+3+4+5)×0.075 + 5×0.45 + 2×0.10 + 4×0.15 = 4.25 — the worked example in floor.md
+  assert.equal(rubricTotal(worked, 'functional'), 8.5);
+});
+
+test('a total landing exactly on a half rounds up, not down', () => {
+  // 0.075 and 0.45 are not binary-representable: accumulated as floats this set lands at
+  // 8.249999999999998 and rounds to 8.2, so a contract that wrote the 8.3 floor.md asks for
+  // would be failed for not following from its own scores.
+  const half = new Map([
+    ['composition', 3],
+    ['type', 3],
+    ['color', 3],
+    ['density', 4],
+    ['usability', 5],
+    ['signature', 3],
+    ['content', 4],
+  ]);
+  assert.equal(rubricTotal(half, 'functional'), 8.3);
+});
+
+test('no score set can produce a total the checker would reject as unroundable', () => {
+  // Brute force is cheap here (5^7 per profile) and it is the only honest way to claim the
+  // arithmetic agrees with a person doing it by hand for every rubric that can be written.
+  for (const profile of ['expressive', 'functional']) {
+    for (let n = 0; n < 5 ** 7; n += 1) {
+      let rest = n;
+      const scores = new Map();
+      for (const axis of RUBRIC_AXES) {
+        scores.set(axis, (rest % 5) + 1);
+        rest = Math.floor(rest / 5);
+      }
+      const total = rubricTotal(scores, profile);
+      assert.equal(Math.round(total * 10) / 10, total, `${profile} ${n} produced ${total}`);
+    }
+  }
+});
+
+test('a quiet budget stops paying for the signature axis it told you not to spend on', () => {
+  const quiet = new Map([
+    ['composition', 4],
+    ['type', 4],
+    ['color', 4],
+    ['density', 4],
+    ['usability', 4],
+    ['signature', 2],
+    ['content', 4],
+  ]);
+  // Weighed normally this is 7.2 — permanently below target for obeying its own budget.
+  assert.equal(rubricTotal(quiet, 'expressive'), 7.2);
+  assert.equal(rubricTotal(quiet, 'expressive', 'quiet'), 8);
+
+  // The released weight is moved, never dropped: the weights still sum to 1.
+  const fives = new Map(RUBRIC_AXES.map((axis) => [axis, 5]));
+  assert.equal(rubricTotal(fives, 'expressive', 'quiet'), 10);
+  assert.equal(rubricTotal(fives, 'functional', 'quiet'), 10);
+});
+
+test('rubricTotal has no answer for a partial rubric', () => {
+  const partial = new Map([['composition', 4]]);
+  assert.equal(rubricTotal(partial, 'expressive'), null);
+});
+
+test('a rubric with no total fails — nothing to compare the next pass against', () => {
+  const noTotal = VALID.replace(/^total: 8\.6$/m, '');
+  assert.ok(errors(noTotal).some((m) => /no "total:"/.test(m)));
+});
+
+test('a total that does not follow from its own scores fails', () => {
+  const inflated = VALID.replace(/^total: 8\.6$/m, 'total: 9.4');
+  assert.ok(errors(inflated).some((m) => /does not follow from its own scores/.test(m)));
+
+  const rounded = VALID.replace(/^total: 8\.6$/m, 'total: 8.62');
+  assert.deepEqual(errors(rounded), [], 'within 0.05 is the same score written differently');
+});
+
+test('a total below target warns unless it is already marked BELOW TARGET', () => {
+  const weak = VALID.replace(/^usability: 4$/m, 'usability: 1').replace(/^total: 8\.6$/m, 'total: 6.8');
+  assert.deepEqual(errors(weak), [], 'an honest low score is not an error');
+  assert.ok(warnings(weak).some((m) => /below the 8\.0 target/.test(m)));
+
+  const declared = weak.replace(/^total: 6\.8$/m, 'total: 6.8 BELOW TARGET');
+  assert.equal(
+    warnings(declared).some((m) => /below the 8\.0 target/.test(m)),
+    false,
+    'a score already reported as below target does not need to be told twice',
+  );
+});
+
+test('the annotation on the template line cannot silence the below-target warning', () => {
+  const annotated = VALID.replace(/^usability: 4$/m, 'usability: 1').replace(
+    /^total: 8\.6$/m,
+    'total: 6.8',
+  );
+  const kept = annotated.replace(
+    'total: 6.8',
+    'total: 6.8   (target 8.0; append " BELOW TARGET" when under)',
+  );
+  assert.ok(
+    warnings(kept).some((m) => /below the 8\.0 target/.test(m)),
+    'the marker only counts on the total line, not anywhere in the section',
+  );
+});
+
+test('a rubric profile that contradicts MODE fails', () => {
+  const wrong = VALID.replace('profile: expressive', 'profile: functional');
+  assert.ok(errors(wrong).some((m) => /contradicts MODE marketing/.test(m)));
+
+  // MODE stays the authority for the recomputation: a contract that records the wrong
+  // profile and a total computed under it must not have that total validated as correct.
+  const inflated = VALID.replace('MODE         marketing', 'MODE         product-surface');
+  assert.ok(errors(inflated).some((m) => /the functional profile gives 8\.4/.test(m)));
+
+  const unknown = VALID.replace('profile: expressive', 'profile: jury');
+  assert.ok(errors(unknown).some((m) => /is not expressive \| functional/.test(m)));
+});
+
+test('an omitted profile is derived from MODE rather than failing', () => {
+  const implied = VALID.replace(/^profile: expressive$/m, '');
+  assert.deepEqual(errors(implied), []);
 });
 
 test('the rubric parses table rows as well as plain lines', () => {
@@ -267,12 +431,17 @@ test('the rubric parses table rows as well as plain lines', () => {
 });
 
 test('a high signature score on a product surface is flagged as a defect', () => {
-  const product = VALID.replace('MODE         marketing', 'MODE         product-surface');
+  const product = VALID.replace('MODE         marketing', 'MODE         product-surface')
+    .replace('profile: expressive', 'profile: functional')
+    .replace(/^total: 8\.6$/m, 'total: 8.4');
   assert.ok(warnings(product).some((m) => /record that as a defect/.test(m)));
 });
 
 test('a measured budget with nothing loud is flagged as an unspent budget', () => {
-  const flat = VALID.replace(/^signature: 4$/m, 'signature: 2');
+  const flat = VALID.replace(/^signature: 5$/m, 'signature: 2').replace(
+    /^total: 8\.6$/m,
+    'total: 7.4 BELOW TARGET',
+  );
   assert.ok(warnings(flat).some((m) => /unspent budget/.test(m)));
 });
 
