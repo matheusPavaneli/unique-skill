@@ -37,6 +37,14 @@ MEASURE  66ch body, 38ch sidenotes
 RHYTHM   28px baseline unit, section padding 4x and 8x
 BLEED    the cone chart only, full viewport above 768px
 
+## Components
+RECOGNIZED  the schedule row, the cone gauge, the book control
+INTERACTION reveal — hovering a slot shows the firing curve and the hold time
+CONTROL     44px, comfortable; the schedule table drops to a 32px row
+CORNER      0px — kiln shelves and pyrometric cones are cut, not moulded
+SEPARATION  border — hairline rules divide, grounds stay flat, nothing is elevated
+FOCUS       --focus, 2px wide at 2px offset, 3:1 against both the row and the ground
+
 ## Provenance
 COLOR      clay + oxide blue   <- unfired earthenware against a cobalt oxide wash
 TYPE       Fraunces + Source Serif   <- the glaze recipe cards pinned above the wheel
@@ -94,6 +102,60 @@ test('a grid section missing any of its six lines fails', () => {
 test('a grid with no reading path or density map fails', () => {
   assert.ok(errors(VALID.replace(/^PATH.*$/m, '')).some((m) => /no PATH line/.test(m)));
   assert.ok(errors(VALID.replace(/^DENSITY.*$/m, '')).some((m) => /no DENSITY line/.test(m)));
+});
+
+test('a contract with no components section fails — the tokens land on a default grammar', () => {
+  assert.ok(errors(without('Components')).some((m) => /missing "## Components" section/.test(m)));
+});
+
+test('a components section missing any of its six lines fails', () => {
+  const noCorner = VALID.replace(/^CORNER.*$/m, '');
+  assert.ok(errors(noCorner).some((m) => /no CORNER line/.test(m)));
+  const noSeparation = VALID.replace(/^SEPARATION.*$/m, '');
+  assert.ok(errors(noSeparation).some((m) => /no SEPARATION line/.test(m)));
+});
+
+test('a components key with nothing after it is a heading, not a decision', () => {
+  const empty = VALID.replace(/^FOCUS.*$/m, 'FOCUS');
+  assert.ok(errors(empty).some((m) => /components FOCUS has no value/.test(m)));
+
+  const blank = VALID.replace(/^INTERACTION.*$/m, 'INTERACTION   ');
+  assert.ok(errors(blank).some((m) => /components INTERACTION has no value/.test(m)));
+});
+
+test('a components block with no measurements in it fails, like a grid with no numbers', () => {
+  const vague = VALID.replace(
+    /## Components[\s\S]*?(?=\n## )/,
+    [
+      '## Components',
+      'RECOGNIZED  the schedule row, the cone gauge, the book control',
+      'INTERACTION reveal — hovering a slot shows the firing curve',
+      'CONTROL     comfortable',
+      'CORNER      soft',
+      'SEPARATION  border',
+      'FOCUS       a clearly visible ring',
+      '',
+    ].join('\n'),
+  );
+  assert.ok(errors(vague).some((m) => /components section contains no numbers/.test(m)));
+});
+
+test('the components gate is not scoped by mode — native and prototype fail too', () => {
+  for (const mode of ['native', 'prototype']) {
+    const contract = without('Components').replace('MODE         marketing', `MODE         ${mode}`);
+    assert.ok(
+      errors(contract).some((m) => /missing "## Components" section/.test(m)),
+      `${mode} should still require the components block`,
+    );
+  }
+});
+
+test('a complete components block passes, at every mode', () => {
+  assert.deepEqual(errors(VALID), []);
+  for (const mode of ['native', 'prototype']) {
+    const contract = VALID.replace('MODE         marketing', `MODE         ${mode}`);
+    assert.deepEqual(errors(contract), []);
+  }
 });
 
 test('a signature contract with no directions section fails', () => {

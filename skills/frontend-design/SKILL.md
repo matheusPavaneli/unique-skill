@@ -21,6 +21,7 @@ Read only the reference the decision needs. All paths under `${CLAUDE_PLUGIN_ROO
 | `design/originality.md` | ORIGINALITY is `signature` or `benchmark` |
 | `design/devices.md` | With `design/originality.md`, at layout and composition time — what to move *to* once a default is rejected |
 | `design/craft.md` | Any visual decision: type, color, space, motion, layout |
+| `design/components.md` | After the tokens, before the layout — the control grammar the tokens get spent on. Every MODE, `native` included |
 | `design/spectacle.md` | Any 3D, shader, particle, ambient-motion or scroll-choreography idea — and always before spending a `loud` budget |
 | `design/copy.md` | Any user-visible words get written |
 | `quality/engineering.md` | Any code ships — perf, fonts, images, budgets |
@@ -75,17 +76,23 @@ In thinking, held against the contract:
    `${CLAUDE_PLUGIN_ROOT}/scripts/palette.mjs` from the COLOR provenance fact, not out of
    the head; the type role comes from the five-step face derivation in the same file, not
    from a pairing reflex.
-2. **Layout** — one-sentence concept, an ASCII wireframe, and the four-line grid block
-   (`COLUMNS` / `MEASURE` / `RHYTHM` / `BLEED`) in numbers. Compare at least two concepts.
-   A layout described only in adjectives is the axis that comes back generic every time.
-   `design/craft.md`, the grid block.
-3. **Signature** — where the budget is spent, and what stays quiet around it. If it
+2. **Component grammar** — the six-line components block (`RECOGNIZED` / `INTERACTION` /
+   `CONTROL` / `CORNER` / `SEPARATION` / `FOCUS`), derived from the same fact as the tokens.
+   `design/components.md`. This is where the tokens become a look, and skipping it applies a
+   derived palette to the default component shapes, which produces a tinted default. Required
+   at every MODE — at `native` it records the grammar being inherited, by name.
+3. **Layout** — one-sentence concept, an ASCII wireframe, and the grid block
+   (`PATH` / `DENSITY` / `COLUMNS` / `MEASURE` / `RHYTHM` / `BLEED`) in numbers. Compare at
+   least two concepts. A layout described only in adjectives is the axis that comes back
+   generic every time. `design/craft.md`, the grid block.
+4. **Signature** — where the budget is spent, and what stays quiet around it. If it
    involves depth, an effect, particles or ambient motion, run `design/spectacle.md`:
-   derive the idiom from the subject's mechanism, generate three candidates at three
-   fidelity tiers, kill two, and write the effect spec block before any code.
-4. **Cost ledger** — every expressive choice priced against `quality/engineering.md` and
+   derive the idiom from the subject's mechanism, name the primitive underneath it, generate
+   three candidates at three fidelity tiers, kill two, and write the effect spec block before
+   any code.
+5. **Cost ledger** — every expressive choice priced against `quality/engineering.md` and
    against `.unique/stack.md` if it exists. Unpaid cost is a cut choice, not a caveat.
-5. **Gate** — `signature` or `benchmark` runs `design/originality.md` now, and revises
+6. **Gate** — `signature` or `benchmark` runs `design/originality.md` now, and revises
    before code, not after.
 
 Show the user ideas only at higher confidence.
@@ -134,9 +141,10 @@ surface diverges instead of repeating. Format in `${CLAUDE_PLUGIN_ROOT}/shared/a
 node ${CLAUDE_PLUGIN_ROOT}/scripts/check-contract.mjs .unique
 ```
 
-Fails on a missing contract line, a grid block without numbers, a provenance "fact" that is
-a mood, fewer than two rejected directions, a missing or straight-3 rubric, and a `log.md`
-entry repeating an earlier `(palette, display face, layout device)` triple. The gates in
+Fails on a missing contract line, a grid block without numbers, a missing components block or
+one of its keys left without a value, a provenance "fact" that is a mood, fewer than two
+rejected directions, a missing or straight-3 rubric, and a `log.md` entry repeating an earlier
+`(palette, display face, layout device)` triple. The gates in
 `design/originality.md` were prose, and prose gates leave no trace — a run that skipped them
 reads exactly like one that did not. Fix what it reports before calling the surface done.
 

@@ -29,6 +29,17 @@ Use OKLCH for palettes: lightness is perceptual, so a ramp stays even and hover/
 states are a lightness delta (`calc()` or a second token), not a hand-picked new hex.
 Test every ramp against `forced-colors: active` — decorative color disappears there.
 
+**Layer 3 is where the derivation would otherwise stop.** This file derives the values —
+radius, elevation, control height, motion durations, the spacing scale. It does not decide
+what a button, a field, a row or a card is *made of*, and a derived palette poured into the
+default component shapes produces a tinted default. That layer is `components.md`: the control
+height and density, the corner treatment, whether structure is carried by border, ground or
+shadow, the focus ring, the one interaction signature, the three-to-five places the system is
+recognizable, and the state matrix as a design surface rather than as an audit. Read it after
+the tokens exist and before the layout is built. The split is numbers here, grammar there:
+where `components.md` restates an elevation set, a state-change duration or a contrast ratio,
+this file is the source and that one is the point of use.
+
 ## Type
 
 - Two faces is the default; three is a decision; four is a bug. Roles: display, body,
@@ -284,10 +295,13 @@ them the same grid holds the same generic content in a more elegant frame.
 ### The grid block
 
 Type and color get derived in numbers; layout was getting derived in adjectives, which is why
-layout is reliably the most generic axis in the output. Write these four lines into the
-contract before any CSS, and build to them:
+layout is reliably the most generic axis in the output. Write these six lines into the
+contract's `## Grid` section before any CSS, and build to them — the first two come from the
+subsection above, and `check-contract.mjs` requires all six in that one section:
 
 ```
+PATH     <where the eye lands, then goes — three or four stops>
+DENSITY  <which sections are dense, which are near-empty>
 COLUMNS  <count and ratio, and whether it holds or alternates>
 MEASURE  <max-inline-size in ch, per content role>
 RHYTHM   <baseline unit in px, and section padding as multiples of it>
@@ -308,7 +322,8 @@ Rules that make the block worth writing:
 
 **What stays uniform.** The variance is spent on density, scale and the one motion moment —
 nothing else. Radius, stroke weight, icon grid, control height, focus ring and the spacing
-scale itself stay ruthlessly consistent. Varying those is not art direction; it is an
+scale itself stay ruthlessly consistent — one control height, with at most one second step
+declared as a register shift in the components block. `components.md`. Varying those is not art direction; it is an
 unfinished component library, and it reads as one.
 
 **Native masonry** (`display: grid-lanes`) is shipping unevenly as of 2026 — Safari first,

@@ -18,6 +18,7 @@ export const MODES = ['product-surface', 'marketing', 'editorial', 'native', 'pr
 export const BUDGETS = ['quiet', 'measured', 'loud'];
 export const AXES = ['COLOR', 'TYPE', 'LAYOUT', 'SIGNATURE'];
 export const RUBRIC_AXES = ['composition', 'type', 'color', 'density', 'signature'];
+export const COMPONENT_KEYS = ['RECOGNIZED', 'INTERACTION', 'CONTROL', 'CORNER', 'SEPARATION', 'FOCUS'];
 
 /**
  * Phrases that are not facts. The provenance line exists to stop "modern and trustworthy"
@@ -132,7 +133,7 @@ export function checkContract(text) {
     fail(`contract.md: ORIGINALITY "${originality}" is not native | benchmark(<reference>) | signature`);
   }
 
-  for (const required of ['Tokens', 'Grid']) {
+  for (const required of ['Tokens', 'Grid', 'Components']) {
     if (!sections.has(required.toLowerCase())) fail(`contract.md: missing "## ${required}" section`);
   }
 
@@ -148,6 +149,25 @@ export function checkContract(text) {
       }
     }
     if (!/\d/.test(grid)) fail('contract.md: grid section contains no numbers — that is a mood, not a grid');
+  }
+
+  // Components is the layer the tokens get spent on, and it was the one axis with nothing to
+  // check: a derived palette poured into the default control shapes is a tinted default, and
+  // it is textually indistinguishable from a derived grammar. Required in every MODE —
+  // `native` records the grammar it inherited by name, and `prototype` is precisely where an
+  // unrecorded default enters and never leaves.
+  const components = (sections.get('components') ?? []).join('\n');
+  if (sections.has('components')) {
+    for (const key of COMPONENT_KEYS) {
+      const line = new RegExp(`^\\s*${key}\\b[ \\t]*(.*)$`, 'm').exec(components);
+      if (!line) fail(`contract.md: components section has no ${key} line`);
+      else if (line[1].trim() === '') {
+        fail(`contract.md: components ${key} has no value — a key with nothing after it is a heading, not a decision`);
+      }
+    }
+    if (!/\d/.test(components)) {
+      fail('contract.md: components section contains no numbers — control height, radius and the focus ring are measurements');
+    }
   }
 
   const tokens = (sections.get('tokens') ?? []).join('\n');

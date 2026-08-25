@@ -106,7 +106,8 @@ Loaded on demand, never all at once:
 ```
 shared/stacks/    core · 3d-and-motion · dataviz-and-maps · editors-and-media
                   realtime-and-ai · platform
-shared/design/    modes · landing · originality · devices · spectacle · craft · copy
+shared/design/    modes · landing · originality · devices · spectacle · craft · components
+                  copy
 shared/quality/   engineering · measure · floor
 ```
 
@@ -117,8 +118,9 @@ absent, and the tightest performance budget in the plugin.
 
 `shared/design/devices.md` is the positive repertoire. A blacklist alone lowers the floor
 without raising the ceiling: a rejected default leaves a gap that the next-nearest default
-fills. It names composition, type, color and detail devices with the condition each one
-needs and what it breaks on, and it is indexed **by fact** rather than alphabetically — a
+fills. It names devices on five axes — composition, type, color and material, motion and
+interaction, surface and material — plus the free details, each with the condition it needs
+and what it breaks on, and it is indexed **by fact** rather than alphabetically — a
 sequence implies a spine, a catalog implies an index, a material implies a ground — so the
 route in is the provenance line, never a browse.
 
@@ -134,6 +136,17 @@ and the composition sequence — a reading `PATH` and a `DENSITY` map, then `COL
 `MEASURE` / `RHYTHM` / `BLEED` — because layout was the only axis being decided in adjectives,
 and it was reliably the most generic one in the output.
 
+`shared/design/components.md` is the layer between the tokens and the page. `craft.md` derives
+the values; nobody sees a token and everybody sees a control, and a derived palette poured
+into the default component shapes is a tinted default. So the component grammar is derived
+from the same provenance fact and recorded in six lines — the three-to-five places the system
+is recognizable, the one interaction signature every control shares, the control height and
+the density it sets, the corner treatment, whether structure is carried by border, ground or
+shadow, and the focus ring — with the state matrix treated as a design surface rather than as
+an audit, because empty is usually the most-seen screen. `check-contract.mjs` requires the
+block in every MODE: at `native` it records the grammar being inherited by name, and
+`prototype` is precisely where an unexamined default enters a codebase and never leaves.
+
 **Uniformity is the tell.** The most reliable sign of a generated page in 2026 is not a style,
 it is a statistic: identical padding on every section, one radius everywhere, every card the
 same height, the same fade-and-rise on every element. So the variance rule says where
@@ -144,7 +157,10 @@ never is: radius, stroke weight, icon grid, control height, focus ring.
 belong at all: every effect must reveal a mechanism, respond to the person, or repay
 attention, priced by how often the surface is visited, derived from the subject's own verb
 rather than picked from a list, and specified with a parameter mapping, a degrade path and a
-cut line before any code.
+cut line before any code. Under the idiom catalog it names the seven primitives the idioms are
+actually built from — displacement, flow field, SDF, feedback, moiré, dither, halftone — each
+with the quantity its parameter must map to, its cheapest CSS or SVG form, and the fidelity
+tier it escalates to when that form genuinely fails.
 
 `shared/quality/engineering.md` holds the budgets everything is measured against, and the
 loading details that expressive choices depend on — including the metric-matched font
@@ -201,7 +217,9 @@ whether it ships, the `Lc` tells you whether anyone can read it.
 390 / 768 / 1440 full-page plus 320 px and 200 % zoom.
 
 `check-contract.mjs` reads `.unique/contract.md` and `log.md` and fails on a missing contract
-line, a grid block with no numbers in it, a provenance "fact" that is a mood, fewer than two
+line, a grid block with no numbers in it, a missing components block, one of its six keys
+left with no value or a components block with no measurements in it, a provenance "fact" that
+is a mood, fewer than two
 rejected directions, a missing rubric, a straight-3 rubric, and any `log.md` entry repeating
 an earlier `(palette, display face, layout device)` triple. It checks that the decisions were
 made and recorded — not that they were good ones. That is what the rubric is for.

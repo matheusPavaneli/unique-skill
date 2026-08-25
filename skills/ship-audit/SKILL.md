@@ -30,8 +30,10 @@ as "not measured", never estimated as fact.**
    Never score from source.
 
    Then `node ${CLAUDE_PLUGIN_ROOT}/scripts/check-contract.mjs .unique`: a surface whose
-   contract has no grid block, no provenance fact per axis, or no rubric scores was not
-   audited against a design decision, because none was recorded.
+   contract has no grid block, no components block, no provenance fact per axis, or no rubric
+   scores was not audited against a design decision, because none was recorded. The components
+   block is required in every MODE — a contract written before that gate existed fails here
+   until the grammar it shipped is written down.
 
 4. **Bundle.** Read the build output. Initial JS per route against the budget. Find what is
    in the initial chunk that should not be — a chart library, an editor, a 3D runtime, a

@@ -88,8 +88,9 @@ one.
     design is better for it. Name what was removed.
 
 11. **Contract holds.** `node ${CLAUDE_PLUGIN_ROOT}/scripts/check-contract.mjs .unique` — the
-    five contract lines, the grid block in numbers, a provenance fact per axis, two rejected
-    directions, the five rubric scores, and no repeated triple in `log.md`. It checks that
+    five contract lines, the grid block in numbers, the components block in every MODE with a
+    value on every key, a provenance fact per axis, two rejected directions, the five rubric
+    scores, and no repeated triple in `log.md`. It checks that
     the decisions were made and recorded, not that they were good ones; a clean run is the
     floor, not the ceiling.
 

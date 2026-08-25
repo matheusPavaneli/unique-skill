@@ -137,6 +137,81 @@ absence to apologize for.
 
 ---
 
+## Effect primitives — what the idioms are made of
+
+The idiom says what the effect *is about*. Below it there is a much smaller vocabulary of
+mechanisms that award-level work is actually built from — seven of them cover most of it —
+and knowing them is the difference between deriving an effect and reaching for a library that
+already packaged one.
+
+Each entry: what it is made of, the parameter that must map to a real quantity of the
+subject, the cheapest form that genuinely produces it, and the tier in
+`../stacks/3d-and-motion.md` it escalates to when the cheap form actually fails. Escalate on
+a measurement, never on ambition — and the cheap form fails far less often than it is assumed
+to.
+
+**Displacement.** Sampling a source at coordinates offset by a second field, so an image,
+a rule or a body of type is pushed around without being redrawn. Map: the displacement
+*amount* to a real magnitude — a load, a deviation, a signal strength — and the field's scale
+to a real size. Cheapest: SVG `feDisplacementMap` driven by `feTurbulence` or, better, by a
+real greyscale map; `filter: url(#id)` on any element, animated by moving the source. Reads as
+material rather than as an effect when the map is real data. Escalates to T2 when it must
+respond per-frame to the pointer across a full-viewport surface.
+
+**Flow field.** A vector field sampled per particle per frame, so many small things move along
+one coherent invisible geometry. Map: the *count* to a real quantity (nodes, requests, items
+in flight) and the field to the real topology — never a count tuned until it looks nice. This
+is the difference between an earned particle field and `particles.js`. Cheapest: T1, a few
+hundred particles on a 2D canvas with the field computed in closed form. Escalates to T5 only
+when the field itself *is* the product and the count is genuinely in the hundreds of
+thousands.
+
+**Signed distance field (SDF).** Geometry described as "distance to the nearest surface",
+which makes shapes that merge, hollow, outline, repeat and round without any mesh. Map: the
+distance threshold to a real tolerance, a radius, a margin, a proximity. Cheapest: for one
+static shape, an SVG path or a `mask-image`; for merging blobs, CSS `filter: blur()` plus
+`contrast()` (the "gooey" trick) at 0 KB. Escalates to T2 for a real SDF fragment shader —
+raymarched 3D included, since raymarching exists precisely so that no mesh is needed and it is
+still one full-screen quad. It reaches T3 only when the subject brings real geometry or real
+assets, which is a 150 KB step and rarely what an SDF was wanted for.
+
+**Feedback.** Each frame reads the previous frame, so the surface accumulates: trails, decay,
+smear, growth, erosion. Map: the *decay rate* to a real half-life — how long the subject's own
+signal actually persists. Cheapest: a canvas cleared with a partial-alpha fill instead of
+`clearRect`, which is one line and gives trails with real decay. Escalates to T2 with a
+ping-pong framebuffer when the accumulation must be per-pixel and physical. This is the
+primitive under most "it feels alive" surfaces, and it is nearly free.
+
+**Moiré.** Two regular grids overlaid at a small angle or a small scale difference, producing
+a third pattern that is enormously sensitive to both. Map: the *angle or pitch difference* to
+a real quantity — a drift, a mismatch, a tolerance, a phase — because moiré's whole
+expressive value is that a tiny change in an input makes a large change in the output.
+Cheapest: two `repeating-linear-gradient` layers, or two SVG line patterns, one rotated; 0 KB
+and it animates on `transform`. Rarely needs to escalate at all.
+
+**Dither.** Quantizing to very few levels while distributing the error, so a gradient survives
+at two or four colors instead of banding. Map: the *level count* to something real — the bit
+depth of the source instrument, the number of states, the palette actually available.
+Cheapest: an ordered (Bayer) matrix as a tiled CSS or SVG mask over a flat field, 0 KB; for
+photographs, dither at build time and ship a smaller file than the original. Escalates to T2
+only for dithering something that is itself being generated per frame.
+
+**Halftone.** Continuous tone rendered as marks of varying size on a regular grid at a stated
+ruling and angle. Map: the *ruling* to the subject's real process — a newsprint line count, a
+risograph screen, a fax resolution — and the angle to what that process uses. Cheapest: a
+repeating radial-gradient mask, or an SVG pattern of circles scaled by a luminance mask; 0 KB.
+Escalates to T2 when the ruling must follow the pointer or the mark shape is not a dot.
+
+Two rules over all seven:
+
+- **A primitive with no mapping is a filter.** If the parameter is tuned by eye until it looks
+  good, the effect is decoration and Gate A has not been passed. The mapping line in the
+  effect spec is where this is checked.
+- **Compose at most two.** Displacement over a halftone, feedback over a flow field: two
+  primitives is a mechanism, four is a demo. The same rule as the devices.
+
+---
+
 ## Making one: from fact to mechanism
 
 Effects are not chosen from a list of effects. They are derived, in three moves:
@@ -157,6 +232,7 @@ Then specify it precisely enough to build, because "particle field" is not a spe
 
 ```
 IDIOM      <from the catalog, or named if new>
+PRIMITIVE  <the effect primitive underneath it, or "none — this is T0 composition">
 MECHANISM  <the verb sentence>
 JOB        reveal | response | repay
 MAPPING    <visual parameter> <- <real quantity of the subject>

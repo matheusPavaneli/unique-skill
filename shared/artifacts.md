@@ -98,8 +98,17 @@ MEASURE  <max-inline-size in ch, per content role>
 RHYTHM   <baseline unit in px, section padding as multiples of it>
 BLEED    <exactly which elements break the measure, and above which width>
 
+## Components
+RECOGNIZED  <the three to five places this system is recognizable — named>
+INTERACTION <the one signature every control shares, and what it does>
+CONTROL     <control height in px, the density it sets, and what it applies to>
+CORNER      <radius in px per role, and the fact it derives from>
+SEPARATION  border | ground | shadow — which one carries structure, and where the others stop
+FOCUS       <ring: color token, width, offset, and the ratio it holds against both sides>
+
 ## Effect spec         (only if the surface carries 3D, a shader, particles or ambient motion)
 IDIOM      <from the spectacle catalog>
+PRIMITIVE  <the effect primitive underneath it, or "none — this is T0 composition">
 MECHANISM  <the subject's verb sentence being rendered>
 JOB        reveal | response | repay
 MAPPING    <visual parameter> <- <real quantity>
@@ -132,9 +141,15 @@ signature: <1-5>
 ```
 
 Validate it with `node ${CLAUDE_PLUGIN_ROOT}/scripts/check-contract.mjs .unique` before
-calling the surface done. `## Grid`, `## Rubric` and — at `signature` or `benchmark` — the
-provenance and rejected sections are required, because a decision that left no trace is
-indistinguishable from one that was never made.
+calling the surface done. `## Grid`, `## Components`, `## Rubric` and — at `signature` or
+`benchmark` — the provenance and rejected sections are required, because a decision that left
+no trace is indistinguishable from one that was never made.
+
+`## Components` is required in every MODE, `native` and `prototype` included: at `native` it
+records which existing grammar was inherited, and `prototype` is precisely where an
+unrecorded default enters a codebase and never leaves. A key with no value fails, and so does
+a block with no numbers in it — `CONTROL`, `CORNER` and `FOCUS` are px and ratios, the same
+way the grid block is. `design/components.md`.
 
 ## `log.md`
 

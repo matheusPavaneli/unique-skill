@@ -40,6 +40,13 @@ specific enough — go back to `originality.md` rather than picking the more int
 | Reading, record, reference, long-form authority | Rhythm you can feel | **Baseline grid, visibly held** · **Optical scale, not size steps** |
 | A change of register — argument then reference | Two layout languages, honestly separated | **The register shift** · **The rule as structure** |
 | A first use, an empty desk, a thing not started yet | The empty state is the product | **The empty state as the best screen** · **Focus as part of the design** |
+| A print run, a press, an impression, more than one pass of ink | Ink laid down repeatedly, imperfectly | **Dither and halftone at a real screen ruling** · **Misregistration** |
+| A weave, a mesh, a lattice, a ruled sheet, a punch pitch | Geometry that can be stated in numbers | **Real weave, real rule spacing** · **Grain, at the scale of the process** |
+| Two things joined — a fold, a binding, a butt joint | A seam rather than a blend | **The seam** · **Edge treatment** |
+| A value that updates, a queue, a sort, a filter | Movement that is the content, not a transition | **The state change is the content moving** · **Live state as decoration's replacement** |
+| A performance, a run, a take, an event with an order | A timeline with named stops | **The named timeline** · **The single orchestrated moment** |
+| A long document, a route, a descent, a survey | Reading position as the one quantity | **Scroll as a reading position, not as a trigger** · **Anchored spine** |
+| A tool operated for hours, a console, an instrument panel | The control grammar is the identity | **Press that answers** · **The state change is the content moving** · `components.md` |
 
 ---
 
@@ -151,6 +158,90 @@ rule spacing, a real notation mark — at 0 KB. `../quality/engineering.md`.
 marking a spine, closing a section. Needs: a consistent rule weight and color token, and
 restraint. Breaks: when rules replace spacing, which produces the broadsheet default.
 
+## Motion and interaction
+
+Motion is an axis with a repertoire, not a finishing pass. The banned default here is
+uniformity — the same fade-and-rise on everything, staggered by index — and the replacement is
+not "less motion", it is motion that is *structural*: it carries the content, the state, or
+the reading position, and it would be missed if removed. Timings and easing live in
+`craft.md`; whether an effect is earned at all lives in `spectacle.md`.
+
+**The named timeline.** One page-load sequence with named stops — the ground settles, the
+claim arrives, the specimen resolves, the action appears — authored as a single timeline
+rather than as per-element delays. Needs: a genuine order of understanding. Breaks: when the
+order is just DOM order, which is the staggered-index default with extra steps. Cost: 0 KB
+with CSS `@keyframes` on a shared delay scale.
+
+**The state change is the content moving.** When a value updates, a row sorts, a filter
+narrows, the elements themselves travel to their new positions instead of the old view fading
+into the new one. Needs: stable identity per item, and `view-transition-name` or a FLIP pass.
+Breaks: on lists that fully replace their contents, where the movement is meaningless. Cost:
+0 KB with the View Transitions API. This is the strongest motion device on a product surface
+and the least used.
+
+**The single orchestrated moment.** One place on the page where motion is genuinely
+choreographed — the signature — and complete stillness everywhere else. Needs: the budget
+spent once. Breaks: the moment a second orchestrated moment exists, because scattered
+micro-interactions are themselves a tell. `spectacle.md`, attention economics.
+
+**Scroll as a reading position, not as a trigger.** Scroll drives one continuous quantity
+that reflects where the reader *is* — a progress rule, a sticky index marking the current
+stop, a figure that resolves across a section — instead of firing entrance animations at
+elements as they cross a line. Needs: a document long enough to have a position. Breaks: with
+scroll-jacking or a smooth-scroll library, which is a different thing and usually a cost.
+Cost: 0 KB with `animation-timeline: view()` / `scroll()`, which also runs off the main
+thread. `../stacks/3d-and-motion.md`.
+
+**Press that answers.** The pointer-down state is designed, not inherited: the control takes
+the press with one axis of movement or one step of ink, at 100–160 ms, identical on every
+control. Needs: the interaction signature in `components.md` to have been chosen. Cost: 0 KB,
+and it is most of the difference between an interface that feels built and one that feels
+rendered.
+
+**Motion that stops.** An ambient element that runs to a resting state and then holds, rather
+than looping. Needs: a real end state worth arriving at. Loops are wallpaper; a thing that
+settles is an event. Cost: 0 KB to negative — it stops paying main-thread cost once it lands.
+
+## Surface and material
+
+The layer between color and spectacle: what the page is made of, at 0 KB, before anything
+mounts a canvas. Every device here is conditioned on a **material fact** — the subject has a
+substrate, a printing process, a weave, a screen, a grain — and each is banned as decoration
+when it has none. Without the fact, this is banned defaults #5 and #6 taking a nicer route.
+
+**Dither and halftone at a real screen ruling.** A duotone image or a flat field rendered as
+an ordered dither or a halftone at a *stated* ruling — the line count of the process the
+subject actually uses. Needs: a print, screen, risograph or newsprint fact. Cost: 0 KB with
+an SVG `feTurbulence`-free ordered matrix or a repeating radial-gradient; a real image can be
+dithered at build time and shipped smaller than the original. Breaks: at arbitrary rulings,
+where it is just a texture.
+
+**Misregistration.** Two inks offset by a fraction of a millimetre at the same scale a press
+would miss by — on a heading, a rule, a specimen — held consistently in one direction. Needs:
+a multi-pass printing fact. Breaks: when applied to everything, or when the offset is large
+enough to read as a glitch effect. Cost: 0 KB, one text-shadow or one duplicated SVG layer.
+
+**Real weave, real rule spacing.** An SVG pattern whose geometry comes from the subject: the
+thread count of the fabric, the spacing of a ledger's rules, the pitch of a punch card, the
+grid of a knitting chart, the graticule of a chart. Needs: the real number. Cost: 0 KB, and
+it is the correct fallback whenever a photograph of a material does not exist.
+
+**Edge treatment.** How the page's blocks *end*: a deckle, a perforation, a torn edge, a
+crop mark, a punched corner, a sprocket margin. One edge, used where a section genuinely
+ends. Needs: the subject's own object to have that edge. Breaks: as a decorative frame around
+everything. Cost: 0 KB with `clip-path` or a repeating mask.
+
+**The seam.** Two grounds meeting along a visible, deliberate join — a fold, a gutter, a
+binding, a butt joint, a weld line — with the layout acknowledging it rather than centring
+across it. Needs: a subject that is genuinely two things joined. Strong with the register
+shift, which it can carry.
+
+**Grain, at the scale of the process.** Film grain, paper tooth or sensor noise sized to what
+it actually is at the rendered scale, over one element rather than the page. Needs: a
+photographic or paper fact and a real scale. Breaks: a full-page noise overlay at 3 % opacity,
+which is the default it is one step away from. Cost: 0 KB as an SVG mask, and it must be
+sized in device-independent pixels or it disappears at 2×.
+
 ## Detail
 
 **The caption as a first-class element.** Figures, tables, code and specimens get real
@@ -184,13 +275,23 @@ must break. Cost: 0 KB. Its absence is a tell; its presence is invisible, which 
 
 1. Take the provenance fact and find its row in the index. The row is a starting point, not
    a permission slip — a fact that fits no row is usually the most promising one you have.
-2. Name **one** composition device and **one** type device. Everything else stays
-   conventional. Two devices held perfectly beat six approximated.
+2. Name **two** devices, drawn from **two different axes** — composition, type, color and
+   material, motion and interaction, surface and material — one **structural** (it changes how
+   the page is built) and one **expressive** (it changes how the page is felt). A row that
+   names two devices on one axis is offering alternatives, not a pair: take one from the row
+   and draw the second from a second fact on another axis. Everything else stays conventional.
+   Two devices held perfectly beat six approximated, and the pair is drawn where the facts
+   actually point: a subject with a press and a schedule has no reason to spend both its
+   devices on composition and type.
+   Detail devices are not counted — they are free, and they are expected everywhere.
 3. Check the pair against the budget in `modes.md`. A device that breaks the page's own rules
    is a loud element and is counted.
-4. Write the device into the contract's `LAYOUT` provenance line, and dimension it: the
-   `PATH` and `DENSITY` lines say what the device does to the reader, and `COLUMNS` says it
-   in numbers. A device named but not dimensioned does not survive contact with the CSS, and
-   a device with no effect on the density map was decorative. `craft.md`.
+4. Write the **structural** device into the contract's `LAYOUT` provenance line, whatever axis
+   it came from: `LAYOUT` records the decision that changes how the page is built, and it is
+   the field `log.md` diverges on, so it is never left empty. Then dimension it — `PATH` and
+   `DENSITY` say what the pair does to the reader, `COLUMNS` says it in numbers, and a device
+   that lands on the controls is dimensioned in the components block instead. A device named
+   but not dimensioned does not survive contact with the CSS, and a device with no effect on
+   the density map was decorative. `craft.md`, `components.md`.
 5. Run the swap test per axis. A device that would fit any subject in the category was picked
    from a list rather than derived from a fact — go back to step 1.

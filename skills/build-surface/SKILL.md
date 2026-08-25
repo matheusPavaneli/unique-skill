@@ -28,8 +28,18 @@ working code. Where `frontend-design` owns the look, this owns the wiring.
    `${CLAUDE_PLUGIN_ROOT}/shared/quality/floor.md`. Skeletons match the final layout's
    dimensions or they trade a spinner for layout shift.
 
-5. **Tokens, then composition.** Every value from the contract's token set. No inline hex,
-   no magic spacing, no one-off duration.
+5. **Tokens, then the component grammar, then composition.** Every value from the contract's
+   token set. No inline hex, no magic spacing, no one-off duration.
+
+   The contract's `## Components` block is the acceptance test for the controls, the way the
+   effect spec is for an effect: `CONTROL` sets one control height and every control is sized
+   from it, `CORNER` sets the radius per role, `SEPARATION` names the one strategy that
+   carries structure — the other two appear only where that line says they do — `FOCUS` is
+   the single ring on every focusable thing, and `INTERACTION` is the one answer to a pointer,
+   applied identically. Distinctiveness lives in the three to five components `RECOGNIZED`
+   names and nowhere else. Pouring a derived token set into default control shapes produces a
+   tinted default, which is the failure the block exists to prevent —
+   `${CLAUDE_PLUGIN_ROOT}/shared/design/components.md`.
 
 6. **Integrate capabilities behind a boundary.** Anything heavy — a 3D canvas, an editor,
    a chart library, a map, a video player — is:

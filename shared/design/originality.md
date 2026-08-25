@@ -40,6 +40,37 @@ with icons → alternating image/text → testimonial → pricing table → dark
 footer. That order is fine when the content demands it; it is a template when the content
 was fitted to it.
 
+## Technique is not styling
+
+Several registry entries name a *technique* — a structure — when what is actually banned is
+the **default styling of it**. The distinction matters because a technique is neutral: a
+modular grid, a translucent layer, a numbered sequence, a scroll-driven narrative are
+structures, and structures are chosen because the content has that shape. What makes them
+tells is that they arrive pre-dressed, at their library defaults, on content that does not
+have that shape.
+
+Banning the structure wholesale costs real range and does not even fix the problem: the next
+run reaches for the next-nearest structure, also at its defaults. So read the registry this
+way.
+
+| Technique — neutral | What is actually banned | Adopting it requires |
+| --- | --- | --- |
+| A modular grid of unequal cells (#7 "bento") | Equal-radius rounded tiles at one gap, a tinted icon square per cell, on content that is six of the same thing | Genuinely heterogeneous content, cells sized to what they hold, and a `COLUMNS` line that says the ratios |
+| Translucency and layering (#6 "glassmorphism") | 12 px backdrop-blur on a white 10 %-alpha card over a mesh gradient, with a noise overlay | A real depth order the layers encode, and a legibility check of the text over every ground it can sit on |
+| A scroll-driven narrative | Scroll-jacking, a smooth-scroll library on a page that is read, and entrance animations fired per element as they cross a line | A document with a real reading position, a `PATH` line naming the stops, and a no-JS reading order that already works |
+| Dense hairline structure (#3 "broadsheet") | Rules substituting for spacing, tiny caps eyebrows on everything, zero radius as a style rather than as a derived corner | A `RHYTHM` unit the rules land on, and a reason the subject is ruled — a ledger, a schedule, a table of readings |
+| An ambient field behind a hero (#11) | A starfield or dot grid with a radial vignette, representing nothing | A field that maps to a real quantity, per `spectacle.md` Gate A, and a declared degrade path |
+| Numbered markers (#10) | `01 / 02 / 03` on content that is not a sequence | Content that genuinely is a sequence, and numbers set as numbers — `devices.md` |
+| A product screenshot as the hero (#8) | The skewed floating screenshot with a soft glow beneath it | The product shown flat, at real scale, doing the real job — the strongest idiom in `spectacle.md` |
+| A continuously scrolling strip (#9) | The greyscale logo marquee | A strip whose contents are the subject's own material and whose motion is opt-out |
+| Staggered reveal (#15) | Fade-and-rise on every element, delayed by index | One authored timeline with named stops — the named timeline in `devices.md` |
+
+Two conditions, and they are the whole point: an adopted technique is **derived from a fact**
+like every other axis, and it is **dimensioned in numbers** — columns and ratios, the rhythm
+unit and what bleeds in the grid block, and whatever control grammar it implies in the
+components block. A technique named but not dimensioned reverts to its library defaults on
+contact with the CSS, which is exactly the thing the registry entry was pointing at.
+
 ## The trend press is not an input
 
 Search "web design trends" for the current year and the results describe, item for item, the
@@ -52,6 +83,14 @@ So: never derive an axis from a trend roundup, a "top 10 sites" listicle, or a s
 current circulation. They are legitimate for one purpose only — checking whether a direction
 you already derived has since become common, which is Gate 3. Read them to know what to
 avoid, never to know what to do.
+
+What a trend list describes is the **styling** at the mean, not the structures underneath.
+Per "technique is not styling" above, that is what it costs you to ignore it: a bento grid, a
+scroll narrative, kinetic type or subtle 3D arrived at *from a fact about the subject* and
+dimensioned in the grid and components blocks is a legitimate structure that happens to be in
+circulation. The
+same thing arrived at because it was on the list is the mean of the distribution, and it will
+read as it. The question a trend list can never answer is which of the two happened.
 
 The same applies to the reference set as a whole. Studio work is worth reading for *method*
 — how a decision was reached — never for surface.
@@ -74,13 +113,15 @@ Three places to spend deliberate unevenness, and they cost nothing:
   everything, it is on nothing.
 
 The counter-rule matters just as much: unevenness is spent in those three places and nowhere
-else. Radius, stroke weight, icon grid, control height and focus ring stay ruthlessly
-uniform. Varying *those* is not art direction, it is an unfinished component library.
+else. Radius, stroke weight, icon grid, control height and focus ring stay ruthlessly uniform
+— one control height, with at most one second step declared as a register shift in the
+components block, and no undeclared third. `components.md`. Varying *those* is not art direction, it is an unfinished component library.
 
 **A blacklist alone lowers the floor without raising the ceiling.** A rejected default
 leaves a gap, and the gap gets filled by the next-nearest default. `devices.md` is the
-positive repertoire — named composition, type, color and detail devices with the condition
-each one needs — to derive the replacement from instead. Read it at layout time, after the
+positive repertoire — named devices on five axes (composition, type, color and material,
+motion and interaction, surface and material) plus the free details, each with the condition
+it needs — to derive the replacement from instead. Read it at layout time, after the
 provenance lines below exist, never before: a device chosen from a list is a default with a
 longer name.
 

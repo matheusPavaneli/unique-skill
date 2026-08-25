@@ -142,6 +142,34 @@ never as a shortcut to "we want 3D on the hero".
 
 ## Anti-patterns
 
+**The converged award stack.** three.js + GSAP ScrollTrigger + Lenis + a camera moving along
+a spline + displacement-on-hover is now the single most common shape in award-winning work.
+Every piece is defensible on its own, which is exactly why the set arrives together: it is the
+library reflex wearing prestige, and adopting it is a reflex rather than a decision. The
+result is recognizable on sight in the same way the starter theme is, one tier up in cost —
+roughly 200 KB and a main thread that no longer belongs to the page.
+
+It is a stack-level default, so it is refused at stack level: **each piece still owes its
+rejected alternative and its fallback**, per the routing rubric in `skills/stack-route/SKILL.md`
+and recorded in the stack ledger format in `../artifacts.md`. Answer these four before any of
+it ships.
+
+- **Lenis** replaces native scrolling and costs scroll anchoring, find-in-page and keyboard
+  paging. The alternative is native scroll with `animation-timeline: scroll()`, at 0 KB and
+  off the main thread. Adopt it only where the inertia *is* the subject.
+- **ScrollTrigger** is the right answer for a real authored timeline and the wrong one for a
+  reveal, which is CSS `view()` at 0 KB. If the timeline has one stop, it is not a timeline.
+- **The camera spline** is a choice to make scrolling drive a camera rather than the reader's
+  position. It needs a scene worth flying through, a keyboard path, and a frozen composed
+  frame under `prefers-reduced-motion`.
+- **Displacement on hover** is a primitive, not a feature — `../design/spectacle.md`, effect
+  primitives. Its amount maps to a real quantity or it is a filter, and `feDisplacementMap`
+  does it at T0/T1 before three.js is involved.
+
+Choosing all four is legitimate exactly once: when four separate derivations each landed
+there. Record the four rejected alternatives in `.unique/stack.md` and it is a decision;
+skip them and it is the same page as everyone else's, at 200 KB.
+
 Three.js loaded eagerly on a marketing page · Spline embed as a hero · a 15 MB GLB · five
 postprocessing passes on mobile · `useFrame` allocating a `new Vector3()` every frame ·
 per-frame React state · a particle library configured to look like every other particle
